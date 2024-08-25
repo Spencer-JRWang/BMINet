@@ -59,6 +59,7 @@ class StackingModel:
         meta_model = LogisticRegression(max_iter=10000000)
         stacking_clf = StackingClassifier(estimators=base_model, final_estimator=meta_model, stack_method='predict_proba')
         score_st = cross_val_predict(stacking_clf, X, y_encode, cv=stratified_kfold, method="predict_proba")
+        print(y_encode)
         scores_st.append(score_st[:, 1])
         scores_st = np.array(scores_st)
         scores_st = np.mean(scores_st, axis=0)
@@ -76,8 +77,7 @@ class StackingModel:
         """
         category = dict.fromkeys(df['Disease'])
         category = list(combinations(category, 2))
-        best_scores = []
-
+        Best_Scores = []
         for i in category:
             Cat_A = i[0]
             Cat_B = i[1]
@@ -87,7 +87,6 @@ class StackingModel:
             TPR = []
             AUCs = []
             Scores = []
-            Best_Scores = []
 
             df = df[df['Disease'].isin([Cat_A, Cat_B])]
             print("...Stacking model is building...")
@@ -108,10 +107,9 @@ class StackingModel:
 
             # Save the best scores to a file
             best_score_df = Scores[AUCs.index(max(AUCs))]
-            best_score_df.to_csv(os.path.join(self.output_dir, f"{Cat_A}_{Cat_B}.txt"), sep='\t', index=False)
+            Best_Scores.append(best_score_df)
+            # best_score_df.to_csv(os.path.join(self.output_dir, f"{Cat_A}_{Cat_B}.txt"), sep='\t', index=False)
             print(f"Best Stacking Model detected: {best_stacking}")
             print(f"Best IntegratedScore AUC = {max(AUCs)}")
-
-            Best_Scores.append(max(AUCs))
 
         return Best_Scores
