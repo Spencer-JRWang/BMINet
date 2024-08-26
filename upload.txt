@@ -1,0 +1,7 @@
+python setup.py develop
+python3 setup.py sdist 
+twine upload dist/* 
+
+API:
+
+pypi-AgEIcHlwaS5vcmcCJGRkMzBjN2E2LTA2ZjAtNDEzNi04OWUyLWQyOGFlYWJhMWYzNAACKlszLCI5MDc1NDNjZi0xMWEyLTQxYmMtYWQ3ZS0wNDUxMDBiODZmY2IiXQAABiBPwqLrBEKkTQfE4gP7rav1zEMiFo01D65oT_HidT4KCg
