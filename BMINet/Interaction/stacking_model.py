@@ -199,6 +199,7 @@ class StackingModel:
 
         # Train the Stacking classifier on the training data
         try:
+            print("Stacking Model Training...")
             stacking_clf.fit(X, y)
         except Exception as e:
             raise RuntimeError(f"Failed to fit StackingClassifier: {e}")
@@ -293,6 +294,7 @@ class StackingModel:
 
         # Train the Stacking classifier on the training data
         try:
+            print("Stacking Model Training...")
             stacking_clf.fit(X, y)
         except Exception as e:
             raise RuntimeError(f"Failed to fit StackingClassifier: {e}")
