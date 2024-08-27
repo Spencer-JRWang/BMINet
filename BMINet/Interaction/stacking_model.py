@@ -90,6 +90,7 @@ class StackingModel:
         """
         categories = list(combinations(df['Disease'].unique(), 2))
         Best_Scores = {}
+        Best_Model_Combination = {}
         
         for Cat_A, Cat_B in categories:
             all_com = self.model_combinations()
