@@ -24,6 +24,21 @@ setup(
     packages=find_packages(),
     install_requires=[],
     keywords=['python', 'Net-BMI', 'Interaction','Network','Bone-Muscle','windows'],
+    install_requires=[
+        "pandas",
+        "matplotlib",
+        "numpy",
+        "scikit-learn",
+        "xgboost",
+        "lightgbm",
+        "catboost",
+        "networkx",
+        "scikit-learn",
+        "shap",
+        "tqdm",
+        "community"
+        "seaborn"
+    ],
     classifiers=[
         "Development Status :: 1 - Planning",
         "Intended Audience :: Developers",
