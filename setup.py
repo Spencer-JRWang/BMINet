@@ -9,9 +9,11 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
 # you need to change all these
-VERSION = '0.0.3'
+VERSION = '0.0.4'
 DESCRIPTION = 'Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions'
 LONG_DESCRIPTION = 'Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions'
+
+from setuptools import setup, find_packages
 
 setup(
     name="BMINet",
@@ -37,7 +39,7 @@ setup(
         'community',
         'tqdm'
     ],
-    keywords=['python', 'BMINet', 'Interaction','Network','Bone-Muscle','windows','mac','linux'],
+    keywords=['python', 'BMINet', 'Interaction', 'Network', 'Bone-Muscle', 'windows', 'mac', 'linux'],
     classifiers=[
         "Development Status :: 1 - Planning",
         "Intended Audience :: Developers",
@@ -45,5 +47,7 @@ setup(
         "Operating System :: Unix",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows",
-    ]
+    ],
+    python_requires='>=3.10',
 )
+

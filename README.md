@@ -99,3 +99,4 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/8/28: Version `0.1.0`, test version
 - 2024/8/28: Version `0.2.0`, test version, update discription
 - 2024/8/28: Version `0.3.0`, test version, fix a bug
+- 2024/8/28: Version `0.4.0`, test version, fix python dependency
