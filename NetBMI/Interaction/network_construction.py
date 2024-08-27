@@ -8,7 +8,7 @@ from itertools import combinations
 from sklearn.model_selection import train_test_split
 
 class NetworkConstructor:
-    def __init__(self, df, feature_combination_dict, cutoff, core_name="LightGBM"):
+    def __init__(self, cutoff, core_name="LightGBM"):
         """
         Initialize the NetworkConstructor with the dataset, feature combinations, cutoff value, and core model.
         
@@ -17,8 +17,6 @@ class NetworkConstructor:
         :param cutoff: Threshold to determine whether an edge should be added to the network.
         :param core_name: Name of the core model to use ('LightGBM', 'XGBoost', or 'CatBoost').
         """
-        self.df = df
-        self.feature_combination_dict = feature_combination_dict
         self.cutoff = cutoff
         self.core_name = core_name
         self.core_model = self._select_core_model(core_name)
@@ -40,7 +38,7 @@ class NetworkConstructor:
         else:
             raise ValueError("Unsupported core. Choose from LightGBM, XGBoost, or CatBoost.")
 
-    def construct_network(self):
+    def construct_network(self,df,feature_combination_dict):
         """
         Construct networks for each pair of categories and return a list of interaction networks.
         
@@ -51,9 +49,9 @@ class NetworkConstructor:
         Interactions = []
 
         for i, (Cat_A, Cat_B) in enumerate(category_pairs):
-            df_filtered = self.df[self.df['Disease'].isin([Cat_A, Cat_B])]
+            df_filtered = df[df['Disease'].isin([Cat_A, Cat_B])]
             X = df_filtered.drop("Disease", axis=1)
-            X = X[self.feature_combination_dict[f'{Cat_A} vs {Cat_B}']]
+            X = X[feature_combination_dict[f'{Cat_A} vs {Cat_B}']]
             y = df_filtered['Disease']
             
             # Shuffle and reset indices
