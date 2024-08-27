@@ -116,7 +116,7 @@ class StackingModel:
             best_score_df = Scores[best_idx]
             Best_Scores[f"{Cat_A} vs {Cat_B}"] = best_score_df
 
-            Best_Model_Combination[f"{Cat_A} vs {Cat_B}"] = all_com.index(max(AUCs))
+            Best_Model_Combination[f"{Cat_A} vs {Cat_B}"] = list(all_com[AUCs.index(max(AUCs))])
             
             if self.save:
                 file_path = os.path.join(self.save, f"{Cat_A}_{Cat_B}.txt")
