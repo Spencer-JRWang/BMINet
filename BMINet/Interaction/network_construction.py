@@ -38,13 +38,14 @@ class NetworkConstructor:
         else:
             raise ValueError("Unsupported core. Choose from LightGBM, XGBoost, or CatBoost.")
 
-    def construct_network(self,df,feature_combination_dict):
+    def construct_network(self,df,feature_combination_dict, edge_weight = False):
         """
         Construct networks for each pair of categories and return a list of interaction networks.
         
         :return: List of constructed interaction networks.
         """
-        category = dict.fromkeys(self.df['Disease'])
+        self.feature_combination_dict = feature_combination_dict
+        category = dict.fromkeys(df['Disease'])
         category_pairs = list(combinations(category, 2))
         Interactions = []
 
@@ -88,7 +89,7 @@ class NetworkConstructor:
                     valid_sets=[d_test],
                 )
             else:
-                model = self.core_model.fit(X_train, y_train)
+                model = self.core_model.fit(X, y)
             
             # Compute SHAP interaction values
             shap_interaction_values = shap.TreeExplainer(model, feature_perturbation="interventional").shap_interaction_values(X)
@@ -112,8 +113,11 @@ class NetworkConstructor:
             for row in range(sorted_ia_matrix.shape[0]):
                 for col in range(row + 1, sorted_ia_matrix.shape[1]):
                     weight = sorted_ia_matrix[row, col]
-                    if weight > self.cutoff:
+                    if edge_weight:
                         G.add_edge(feature_names[row], feature_names[col], weight=weight)
+                    else:
+                        if weight > self.cutoff:
+                            G.add_edge(feature_names[row], feature_names[col])
             
             Interactions.append(G)
 

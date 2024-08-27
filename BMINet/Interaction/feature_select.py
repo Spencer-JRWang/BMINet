@@ -112,6 +112,6 @@ class FeatureSelector:
         max_predict_data = max(outcome_score)
         best_features = list(outcome_feature[outcome_score.index(max_predict_data)])
         print(f"Best Features Combination Detected: {best_features}")
-        print(f"Best Validation Score: {max_predict_data}")
+        # print(f"Best Validation Score: {max_predict_data}")
 
         return best_features

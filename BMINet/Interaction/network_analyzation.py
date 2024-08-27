@@ -8,7 +8,7 @@ import community as community_louvain
 import os
 
 class NetworkVisualizer:
-    def __init__(self, graph, metrics, output_dir='../figure/CT/Interaction2'):
+    def __init__(self, graph, metrics):
         """
         Initialize the NetworkVisualizer with a graph, metrics, and an output directory.
 
@@ -18,10 +18,9 @@ class NetworkVisualizer:
         """
         self.graph = graph
         self.metrics = metrics
-        self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
 
-    def plot_adjacency_matrix(self, save_pdf=False, pdf_path=None):
+    def plot_adjacency_matrix(self, pdf_path=None):
         """
         Plot and optionally save the adjacency matrix heatmap of the graph.
 
@@ -37,14 +36,13 @@ class NetworkVisualizer:
         plt.tight_layout()
         plt.show()
 
-        if save_pdf:
-            if pdf_path is None:
-                pdf_path = os.path.join(self.output_dir, 'Adj.pdf')
+        if pdf_path:
+            pdf_path = os.path.join(pdf_path, 'Adj.pdf')
             plt.savefig(pdf_path)
             print(f'Adjacency matrix heatmap saved to {pdf_path}')
         plt.close()
 
-    def plot_centrality_measures(self, save_pdf=False, pdf_path=None):
+    def plot_centrality_measures(self, pdf_path=None):
         """
         Plot and optionally save the centrality measures including betweenness, closeness, degree, and clustering coefficient.
 
@@ -77,14 +75,13 @@ class NetworkVisualizer:
         plt.title('Centrality Distribution Plot')
         plt.show()
 
-        if save_pdf:
-            if pdf_path is None:
-                pdf_path = os.path.join(self.output_dir, 'Centrality.pdf')
+        if pdf_path:
+            pdf_path = os.path.join(pdf_path, 'Centrality.pdf')
             plt.savefig(pdf_path)
             print(f'Centrality distribution plot saved to {pdf_path}')
         plt.close()
 
-    def plot_network_communities(self, save_pdf=False, pdf_path=None):
+    def plot_network_communities(self, pdf_path=None):
         """
         Plot and optionally save the network with community clustering.
 
@@ -115,12 +112,11 @@ class NetworkVisualizer:
         plt.title('Network Clustering Visualization with Separated Communities')
         plt.show()
 
-        if save_pdf:
+        if pdf_path:
+            pdf_path = os.path.join(pdf_path, 'Communities.pdf')
             plt.savefig(pdf_path)
             print(f'Network clustering visualization saved to {pdf_path}')
         plt.close()
-
-
 
 
 class NetworkMetrics:
