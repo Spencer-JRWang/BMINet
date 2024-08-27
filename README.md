@@ -5,9 +5,11 @@ Machine learning and network based tool for:
 - Understand machenism using SHAP model explanation
 - Detect Bone-Muscle Interact network and detect disease modules
 # Install
-Install from pypi: `pip install BMINet`
-
-Or install from GitHub: 
+## Dependency
+- **Python>=3.10**
+## Quick install
+- Install from pypi: `pip install BMINet`
+- Or install from GitHub: 
 ```
 git clone https://github.com/Spencer-JRWang/BMINet
 cd BMINet
