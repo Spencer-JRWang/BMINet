@@ -9,36 +9,35 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
 # you need to change all these
-VERSION = '0.0.1'
+VERSION = '0.0.3'
 DESCRIPTION = 'Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions'
 LONG_DESCRIPTION = 'Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions'
 
 setup(
-    name="Net-BMI",
+    name="BMINet",
     version=VERSION,
     author="Spencer Wang",
     author_email="jrwangspencer@stu.suda.edu.cn",
     description=DESCRIPTION,
-    # long_description_content_type="text/markdown",
-    # long_description=long_description,
+    long_description_content_type="text/markdown",
+    long_description=long_description,
     packages=find_packages(),
-    install_requires=[],
-    keywords=['python', 'Net-BMI', 'Interaction','Network','Bone-Muscle','windows'],
     install_requires=[
-        "pandas",
-        "matplotlib",
-        "numpy",
-        "scikit-learn",
-        "xgboost",
-        "lightgbm",
-        "catboost",
-        "networkx",
-        "scikit-learn",
-        "shap",
-        "tqdm",
-        "community"
-        "seaborn"
+        'numpy',
+        'pandas',
+        'scikit-learn',
+        'networkx',
+        'matplotlib',
+        'scipy',
+        'shap',
+        'seaborn',
+        'xgboost',
+        'lightgbm',
+        'catboost',
+        'community',
+        'tqdm'
     ],
+    keywords=['python', 'BMINet', 'Interaction','Network','Bone-Muscle','windows','mac','linux'],
     classifiers=[
         "Development Status :: 1 - Planning",
         "Intended Audience :: Developers",
