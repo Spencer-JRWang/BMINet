@@ -105,8 +105,8 @@ metrics = metrics_calculator.compute_metrics()
 > You can see more Example usage at [here](https://github.com/Spencer-JRWang/BMINet/blob/main/Example.ipynb)
 
 # Update Log
-- 2024/8/28: Version `0.1.0`, test version
-- 2024/8/28: Version `0.2.0`, test version, update discription
-- 2024/8/28: Version `0.3.0`, test version, fix a bug
-- 2024/8/28: Version `0.4.0`, test version, fix python dependency
-- 2024/8/28: Version `0.5.0`, test version, fix a bug
+- 2024/8/28: Version `0.0.1`, test version
+- 2024/8/28: Version `0.0.2`, test version, update discription
+- 2024/8/28: Version `0.0.3`, test version, fix a bug
+- 2024/8/28: Version `0.0.4`, test version, fix python dependency
+- 2024/8/28: Version `0.0.5`, test version, fix a bug
