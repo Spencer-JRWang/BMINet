@@ -48,6 +48,15 @@ Model = StackingModel()
 best_scores = Model.stacking_model_search(df, selected_features)
 ```
 > Using default base model and meta model, you can also define it yourself
+
+- Predict of each group
+```python
+# single predict
+single_prediction_score = Model.single_predict("A vs B", [...])
+# multiple predict
+multiple_prediction_score = Model.multiple_predict_predict("A vs B", [[...], [...],])
+```
+
 - Basic machine learning plots
 ```python
 from BMINet.plot import plot_ml_roc
