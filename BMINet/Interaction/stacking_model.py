@@ -11,6 +11,7 @@ from sklearn.model_selection import StratifiedKFold
 from lightgbm import LGBMClassifier
 from xgboost import XGBClassifier
 from catboost import CatBoostClassifier
+import pickle
 
 class StackingModel:
     def __init__(self, base_models=None, meta_model=None, cv_splits=5, random_state=42, save = False):
@@ -131,7 +132,7 @@ class StackingModel:
 
         return Best_Scores
 
-    def single_predict(self, group, new_data):
+    def single_predict(self, group, new_data, use_our_model = False):
         """
         Conduct a single individual prediction on the given new data.
 
@@ -139,6 +140,7 @@ class StackingModel:
                     This should be a string indicating the comparison between two classes.
         :param new_data: A list of feature values for the new data you want to predict.
                         The order of values must correspond to the feature combination used for the specified group.
+        :param use_our_model: True or False, you can choose whether to use our trained model.
         :return: The predicted probability of belonging to each class (Cat_A, Cat_B).
                 Returns an array where each element is the probability that the input data belongs to a specific class.
         :raises ValueError: If the group format is incorrect, if new_data has incorrect length, or if features are missing.
@@ -199,8 +201,15 @@ class StackingModel:
 
         # Train the Stacking classifier on the training data
         try:
-            print("Stacking Model Training...")
-            stacking_clf.fit(X, y)
+            if not use_our_model:
+                print("Stacking Model Training...")
+                stacking_clf.fit(X, y)
+            else:
+                print("Loading Stacking Model...")
+                current_dir = os.path.dirname(__file__)
+                pkl_path = os.path.join(current_dir, f'model_{Cat_A} vs {Cat_B}.pkl')
+                with open(pkl_path, 'rb') as file:
+                    stacking_clf = pickle.load(file)
         except Exception as e:
             raise RuntimeError(f"Failed to fit StackingClassifier: {e}")
 
@@ -226,7 +235,7 @@ class StackingModel:
         # Return the predicted probabilities
         return prediction
 
-    def multiple_predict(self, group, new_data_list):
+    def multiple_predict(self, group, new_data_list, use_our_model = False):
         """
         Conduct multiple individual predictions on a list of new data samples.
 
@@ -234,6 +243,7 @@ class StackingModel:
                     This should be a string indicating the comparison between two classes.
         :param new_data_list: A list of lists, where each inner list contains feature values for one sample.
                             The order of values in each inner list must correspond to the feature combination used for the specified group.
+        :param use_our_model: True or False, you can choose whether to use our trained model.
         :return: A list of predicted probabilities for each sample. 
                 Each element in the list is an array where each element is the probability that the input data belongs to a specific class.
         :raises ValueError: If the group format is incorrect, if any new_data sample has an incorrect length, or if features are missing.
@@ -294,10 +304,17 @@ class StackingModel:
 
         # Train the Stacking classifier on the training data
         try:
-            print("Stacking Model Training...")
-            stacking_clf.fit(X, y)
+            if not use_our_model:
+                print("Stacking Model Training...")
+                stacking_clf.fit(X, y)
+            else:
+                print("Loading Stacking Model...")
+                current_dir = os.path.dirname(__file__)
+                pkl_path = os.path.join(current_dir, f'model_{Cat_A} vs {Cat_B}.pkl')
+                with open(pkl_path, 'rb') as file:
+                    stacking_clf = pickle.load(file)
         except Exception as e:
-            raise RuntimeError(f"Failed to fit StackingClassifier: {e}")
+            raise RuntimeError(f"Failed to fit or load StackingClassifier: {e}")
 
         # Validate the new_data_list input
         if not isinstance(new_data_list, list) or not all(isinstance(sample, list) for sample in new_data_list):
