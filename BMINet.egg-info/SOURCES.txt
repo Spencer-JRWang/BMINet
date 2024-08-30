@@ -1,4 +1,5 @@
 LICENSE
+MANIFEST.in
 README.md
 setup.py
 BMINet/__init__.py
@@ -10,6 +11,12 @@ BMINet.egg-info/requires.txt
 BMINet.egg-info/top_level.txt
 BMINet/Interaction/__init__.py
 BMINet/Interaction/feature_select.py
+BMINet/Interaction/model_A vs B.pkl
+BMINet/Interaction/model_A vs C.pkl
+BMINet/Interaction/model_A vs D.pkl
+BMINet/Interaction/model_B vs C.pkl
+BMINet/Interaction/model_B vs D.pkl
+BMINet/Interaction/model_C vs D.pkl
 BMINet/Interaction/model_explanation.py
 BMINet/Interaction/network_analyzation.py
 BMINet/Interaction/network_construction.py

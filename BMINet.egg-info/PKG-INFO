@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: BMINet
-Version: 0.0.5
+Version: 0.0.8
 Summary: Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions
 Author: Spencer Wang
 Author-email: jrwangspencer@stu.suda.edu.cn
@@ -79,6 +79,15 @@ Model = StackingModel()
 best_scores = Model.stacking_model_search(df, selected_features)
 ```
 > Using default base model and meta model, you can also define it yourself
+
+- Predict of each group
+```python
+# single predict
+single_prediction_score = Model.single_predict("A vs B", [...])
+# multiple predict
+multiple_prediction_score = Model.multiple_predict_predict("A vs B", [[...], [...],])
+```
+
 - Basic machine learning plots
 ```python
 from BMINet.plot import plot_ml_roc
@@ -127,7 +136,11 @@ metrics = metrics_calculator.compute_metrics()
 > You can see more Example usage at [here](https://github.com/Spencer-JRWang/BMINet/blob/main/Example.ipynb)
 
 # Update Log
-- 2024/8/28: Version `0.1.0`, test version
-- 2024/8/28: Version `0.2.0`, test version, update discription
-- 2024/8/28: Version `0.3.0`, test version, fix a bug
-- 2024/8/28: Version `0.4.0`, test version, fix python dependency
+- 2024/8/28: Version `0.0.1`, test version
+- 2024/8/28: Version `0.0.2`, test version, update discription
+- 2024/8/28: Version `0.0.3`, test version, fix a bug
+- 2024/8/28: Version `0.0.4`, test version, fix python dependency
+- 2024/8/28: Version `0.0.5`, test version, fix a bug
+- 2024/8/31: Version `0.0.6`, test version, update trained model
+- 2024/8/31: Version `0.0.7`, test version, fix a bug
+- 2024/8/31: Version `0.0.8`, test version, fix a bug

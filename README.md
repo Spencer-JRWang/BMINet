@@ -52,10 +52,13 @@ best_scores = Model.stacking_model_search(df, selected_features)
 - Predict of each group
 ```python
 # single predict
-single_prediction_score = Model.single_predict("A vs B", [...])
+single_prediction_score = Model.single_predict("A vs B", [...], use_our_model=True)
 # multiple predict
-multiple_prediction_score = Model.multiple_predict_predict("A vs B", [[...], [...],])
+multiple_prediction_score = Model.multiple_predict_predict("A vs B", [[...], [...],], use_our_model=True)
 ```
+> If you use `use_our model = True`, you are predicting disease staged based on our data and model
+> 
+> If you are researching on a brand new project, use `use_our_model = False`
 
 - Basic machine learning plots
 ```python
@@ -110,3 +113,6 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/8/28: Version `0.0.3`, test version, fix a bug
 - 2024/8/28: Version `0.0.4`, test version, fix python dependency
 - 2024/8/28: Version `0.0.5`, test version, fix a bug
+- 2024/8/31: Version `0.0.6`, test version, update trained model
+- 2024/8/31: Version `0.0.7`, test version, fix a bug
+- 2024/8/31: Version `0.0.8`, test version, fix a bug
