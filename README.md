@@ -6,7 +6,7 @@ Machine learning and network based tool for:
 - Detect Bone-Muscle Interact network and detect disease modules
 # Install
 ## Dependency
-- **Python>=3.10**
+- **Python>=3.8**
 ## Quick install
 - Install from pypi: `pip install BMINet`
 - Or install from GitHub: 
@@ -116,3 +116,4 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/8/31: Version `0.0.6`, test version, update trained model
 - 2024/8/31: Version `0.0.7`, test version, fix a bug
 - 2024/8/31: Version `0.0.8`, test version, fix a bug
+- 2024/8/31: Version `0.0.9`, test version, fix a bug

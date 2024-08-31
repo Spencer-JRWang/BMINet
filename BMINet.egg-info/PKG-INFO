@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: BMINet
-Version: 0.0.8
+Version: 0.0.10
 Summary: Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions
 Author: Spencer Wang
 Author-email: jrwangspencer@stu.suda.edu.cn
@@ -11,10 +11,10 @@ Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: Unix
 Classifier: Operating System :: MacOS :: MacOS X
 Classifier: Operating System :: Microsoft :: Windows
-Requires-Python: >=3.10
+Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: numpy
+Requires-Dist: numpy==1.26.0
 Requires-Dist: pandas
 Requires-Dist: scikit-learn
 Requires-Dist: networkx
@@ -30,14 +30,14 @@ Requires-Dist: tqdm
 
 
 # Introduction of BMINet
-<!-- ![framework](Example/image.png) -->
+![framework](Example/image.png)
 Machine learning and network based tool for:
 - Classify and predict different disease stages precisely
 - Understand machenism using SHAP model explanation
 - Detect Bone-Muscle Interact network and detect disease modules
 # Install
 ## Dependency
-- **Python>=3.10**
+- **Python>=3.8**
 ## Quick install
 - Install from pypi: `pip install BMINet`
 - Or install from GitHub: 
@@ -83,10 +83,13 @@ best_scores = Model.stacking_model_search(df, selected_features)
 - Predict of each group
 ```python
 # single predict
-single_prediction_score = Model.single_predict("A vs B", [...])
+single_prediction_score = Model.single_predict("A vs B", [...], use_our_model=True)
 # multiple predict
-multiple_prediction_score = Model.multiple_predict_predict("A vs B", [[...], [...],])
+multiple_prediction_score = Model.multiple_predict_predict("A vs B", [[...], [...],], use_our_model=True)
 ```
+> If you use `use_our model = True`, you are predicting disease staged based on our data and model
+> 
+> If you are researching on a brand new project, use `use_our_model = False`
 
 - Basic machine learning plots
 ```python
@@ -144,3 +147,4 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/8/31: Version `0.0.6`, test version, update trained model
 - 2024/8/31: Version `0.0.7`, test version, fix a bug
 - 2024/8/31: Version `0.0.8`, test version, fix a bug
+- 2024/8/31: Version `0.0.9`, test version, fix a bug
