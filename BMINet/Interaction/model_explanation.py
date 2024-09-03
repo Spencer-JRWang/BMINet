@@ -94,7 +94,18 @@ class SHAPVisualizer:
                 self.model = self.model.fit(X, y)
 
             explainer = shap.Explainer(self.model, X)
-            self.shap_values[f"{Cat_A} vs {Cat_B}"] = explainer(X)
+            curr = 1
+            max_attempts = 5
+            while curr <= max_attempts:
+                try:
+                    self.shap_values[f"{Cat_A} vs {Cat_B}"] = explainer(X)
+                    break
+                except Exception as e:
+                    # print(f"Attempt {curr} failed: {str(e)}")
+                    curr += 1
+                    if curr > max_attempts:
+                        print(f"Failed after {max_attempts} attempts.")
+
             self.X = X
             self.y = y
 

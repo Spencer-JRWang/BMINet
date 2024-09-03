@@ -117,3 +117,5 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/8/31: Version `0.0.7`, test version, fix a bug
 - 2024/8/31: Version `0.0.8`, test version, fix a bug
 - 2024/8/31: Version `0.0.9`, test version, fix a bug
+- 2024/9/1: Version `0.0.10`, test version, fix a bug
+- 2024/9/1: Version `0.0.11`, test version, fix a bug

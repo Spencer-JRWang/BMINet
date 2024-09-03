@@ -18,7 +18,6 @@ class NetworkVisualizer:
         """
         self.graph = graph
         self.metrics = metrics
-        os.makedirs(self.output_dir, exist_ok=True)
 
     def plot_adjacency_matrix(self, pdf_path=None):
         """

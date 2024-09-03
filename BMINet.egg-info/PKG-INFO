@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: BMINet
-Version: 0.0.10
+Version: 0.0.11
 Summary: Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions
 Author: Spencer Wang
 Author-email: jrwangspencer@stu.suda.edu.cn
@@ -148,3 +148,5 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/8/31: Version `0.0.7`, test version, fix a bug
 - 2024/8/31: Version `0.0.8`, test version, fix a bug
 - 2024/8/31: Version `0.0.9`, test version, fix a bug
+- 2024/9/1: Version `0.0.10`, test version, fix a bug
+- 2024/9/1: Version `0.0.11`, test version, fix a bug
