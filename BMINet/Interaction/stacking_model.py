@@ -148,6 +148,15 @@ class StackingModel:
         :raises KeyError: If the group is not found in Best_Model_Combinations or feature_combination_dict.
         :raises RuntimeError: If the model fails to fit or predict due to unexpected issues.
         """
+        if not isinstance(group, str) or " vs " not in group:
+            raise ValueError("The group format must be a string in the format 'A vs B'.")
+        # Extract the class names from the group string
+
+        try:
+            Cat_A, Cat_B = group.split(" vs ")
+        except ValueError:
+            raise ValueError("The group format is incorrect; it must be like 'A vs B'.")
+        
         if use_our_model:
             self.our_base_models = {
                 "A vs B":[
@@ -177,6 +186,9 @@ class StackingModel:
                 ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
                 ]
             }
+            # Ensure the group exists in Best_Model_Combinations
+            if group not in self.our_base_models:
+                raise KeyError(f"The group '{group}' was not found in Best_Model_Combinations.")
 
             self.our_feature_combinations = {
                 "A vs B": ['L1', 'L4', 'L5', 'S1', 'L1-L2_3', 'L2-L3_2', 'L2-L3_6', 'L3-L4_2', 'L4-L5_1', 'L4-L5_3'],
@@ -186,24 +198,25 @@ class StackingModel:
                 "B vs D": ['L1', 'L5', 'S1', 'L1-L2_5', 'L1-L2_6', 'L2-L3_1', 'L2-L3_2', 'L2-L3_3', 'L2-L3_6', 'L3-L4_1', 'L3-L4_6', 'L4-L5_1', 'L4-L5_3'],
                 "C vs D": ['L1', 'L2', 'L5', 'S1', 'L1-L2_2', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_2', 'L2-L3_3', 'L2-L3_4', 'L3-L4_1', 'L3-L4_2', 'L3-L4_3', 'L3-L4_6', 'L4-L5_2', 'L4-L5_5', 'L5-S1_1', 'L5-S1_4']
             }
+            # Ensure the feature combination exists for the specified group
+            if f'{Cat_A} vs {Cat_B}' not in self.our_feature_combinations:
+                raise KeyError(f"Feature combination for '{Cat_A} vs {Cat_B}' not found in feature_combination_dict.")
         else:
-            pass
-        # Validate the group format
-        if not isinstance(group, str) or " vs " not in group:
-            raise ValueError("The group format must be a string in the format 'A vs B'.")
+            # Ensure the group exists in Best_Model_Combinations
+            if group not in self.Best_Model_Combinations:
+                raise KeyError(f"The group '{group}' was not found in Best_Model_Combinations.")
+            # Ensure the feature combination exists for the specified group
+            if f'{Cat_A} vs {Cat_B}' not in self.feature_combination_dict:
+                raise KeyError(f"Feature combination for '{Cat_A} vs {Cat_B}' not found in feature_combination_dict.")
 
-        # Ensure the group exists in Best_Model_Combinations
-        if group not in self.Best_Model_Combinations:
-            raise KeyError(f"The group '{group}' was not found in Best_Model_Combinations.")
+    
 
-        # Extract the best model combination for the specified group
-        current_model_combination = self.Best_Model_Combinations[group]
 
         # Create a Stacking classifier using the best model combination and a meta-model
         try:
             if not use_our_model:
                 stacking_clf = StackingClassifier(
-                    estimators=current_model_combination,
+                    estimators=self.Best_Model_Combinations[group],
                     final_estimator=self.meta_model,
                     stack_method='predict_proba'
                 )
@@ -218,40 +231,30 @@ class StackingModel:
         
         except Exception as e:
             raise RuntimeError(f"Failed to create StackingClassifier: {e}")
+        
 
-        # Extract the class names from the group string
-        try:
-            Cat_A, Cat_B = group.split(" vs ")
-        except ValueError:
-            raise ValueError("The group format is incorrect; it must be like 'A vs B'.")
-
-        # Ensure the feature combination exists for the specified group
-        if f'{Cat_A} vs {Cat_B}' not in self.feature_combination_dict:
-            raise KeyError(f"Feature combination for '{Cat_A} vs {Cat_B}' not found in feature_combination_dict.")
-
-        # Filter the dataset to include only the rows corresponding to the specified classes
-        df_filtered = self.df[self.df['Disease'].isin([Cat_A, Cat_B])]
-        if df_filtered.empty:
-            raise ValueError(f"No data found for the classes '{Cat_A}' and '{Cat_B}'.")
-
-        # Select the features used for this group and the target labels
-        X = df_filtered.drop("Disease", axis=1)
-        X = X[self.feature_combination_dict[f'{Cat_A} vs {Cat_B}']]
-        y = df_filtered['Disease']
-
-        # Shuffle the data and reset indices for randomness
-        X = X.reset_index(drop=True)
-        y = y.reset_index(drop=True)
-        shuffle_index = np.random.permutation(X.index)
-        X = X.iloc[shuffle_index]
-        y = y.iloc[shuffle_index]
-
-        # Map the target labels to binary values (0 for Cat_A, 1 for Cat_B)
-        y = y.map({Cat_A: 0, Cat_B: 1})
-
-        # Train the Stacking classifier on the training data
+      # Train the Stacking classifier on the training data
         try:
             if not use_our_model:
+                # Filter the dataset to include only the rows corresponding to the specified classes
+                df_filtered = self.df[self.df['Disease'].isin([Cat_A, Cat_B])]
+                if df_filtered.empty:
+                    raise ValueError(f"No data found for the classes '{Cat_A}' and '{Cat_B}'.")
+
+                # Select the features used for this group and the target labels
+                X = df_filtered.drop("Disease", axis=1)
+                X = X[self.feature_combination_dict[f'{Cat_A} vs {Cat_B}']]
+                y = df_filtered['Disease']
+
+                # Shuffle the data and reset indices for randomness
+                X = X.reset_index(drop=True)
+                y = y.reset_index(drop=True)
+                shuffle_index = np.random.permutation(X.index)
+                X = X.iloc[shuffle_index]
+                y = y.iloc[shuffle_index]
+
+                # Map the target labels to binary values (0 for Cat_A, 1 for Cat_B)
+                y = y.map({Cat_A: 0, Cat_B: 1})
                 print("Stacking Model Training...")
                 stacking_clf.fit(X, y)
             else:
@@ -283,9 +286,13 @@ class StackingModel:
 
         except Exception as e:
             raise RuntimeError(f"Failed to fit StackingClassifier: {e}")
-
+        
         # Validate the new_data input
-        feature_names = self.feature_combination_dict[f'{Cat_A} vs {Cat_B}']
+        if not use_our_model:
+            feature_names = self.feature_combination_dict[f'{Cat_A} vs {Cat_B}']
+        else:
+            feature_names = self.our_feature_combinations[f'{Cat_A} vs {Cat_B}']
+
         if not isinstance(new_data, list):
             raise ValueError("new_data must be a list of feature values.")
         if len(new_data) != len(feature_names):
@@ -299,11 +306,15 @@ class StackingModel:
 
         # Predict the probabilities for the new data
         try:
+            print("Predicting...")
             prediction = stacking_clf.predict_proba(new_data_df)
+            prediction = prediction[0]
         except Exception as e:
             raise RuntimeError(f"Failed to predict with StackingClassifier: {e}")
 
         # Return the predicted probabilities
+        print(f"The probability of group {Cat_A} is {prediction[0]}")
+        print(f"The probability of group {Cat_B} is {prediction[1]}")
         return prediction
 
     def multiple_predict(self, group, new_data_list, use_our_model = False):
@@ -321,6 +332,16 @@ class StackingModel:
         :raises KeyError: If the group is not found in Best_Model_Combinations or feature_combination_dict.
         :raises RuntimeError: If the model fails to fit or predict due to unexpected issues.
         """
+        # Validate the group format
+        if not isinstance(group, str) or " vs " not in group:
+            raise ValueError("The group format must be a string in the format 'A vs B'.")
+        # Extract the class names from the group string
+
+        try:
+            Cat_A, Cat_B = group.split(" vs ")
+        except ValueError:
+            raise ValueError("The group format is incorrect; it must be like 'A vs B'.")
+        
         if use_our_model:
             self.our_base_models = {
                 "A vs B":[
@@ -350,6 +371,9 @@ class StackingModel:
                 ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
                 ]
             }
+            # Ensure the group exists in Best_Model_Combinations
+            if group not in self.our_base_models:
+                raise KeyError(f"The group '{group}' was not found in Best_Model_Combinations.")
 
             self.our_feature_combinations = {
                 "A vs B": ['L1', 'L4', 'L5', 'S1', 'L1-L2_3', 'L2-L3_2', 'L2-L3_6', 'L3-L4_2', 'L4-L5_1', 'L4-L5_3'],
@@ -359,25 +383,25 @@ class StackingModel:
                 "B vs D": ['L1', 'L5', 'S1', 'L1-L2_5', 'L1-L2_6', 'L2-L3_1', 'L2-L3_2', 'L2-L3_3', 'L2-L3_6', 'L3-L4_1', 'L3-L4_6', 'L4-L5_1', 'L4-L5_3'],
                 "C vs D": ['L1', 'L2', 'L5', 'S1', 'L1-L2_2', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_2', 'L2-L3_3', 'L2-L3_4', 'L3-L4_1', 'L3-L4_2', 'L3-L4_3', 'L3-L4_6', 'L4-L5_2', 'L4-L5_5', 'L5-S1_1', 'L5-S1_4']
             }
+            # Ensure the feature combination exists for the specified group
+            if f'{Cat_A} vs {Cat_B}' not in self.our_feature_combinations:
+                raise KeyError(f"Feature combination for '{Cat_A} vs {Cat_B}' not found in feature_combination_dict.")
         else:
-            pass
+            # Ensure the group exists in Best_Model_Combinations
+            if group not in self.Best_Model_Combinations:
+                raise KeyError(f"The group '{group}' was not found in Best_Model_Combinations.")
+            # Ensure the feature combination exists for the specified group
+            if f'{Cat_A} vs {Cat_B}' not in self.feature_combination_dict:
+                raise KeyError(f"Feature combination for '{Cat_A} vs {Cat_B}' not found in feature_combination_dict.")
 
-        # Validate the group format
-        if not isinstance(group, str) or " vs " not in group:
-            raise ValueError("The group format must be a string in the format 'A vs B'.")
+    
 
-        # Ensure the group exists in Best_Model_Combinations
-        if group not in self.Best_Model_Combinations:
-            raise KeyError(f"The group '{group}' was not found in Best_Model_Combinations.")
-
-        # Extract the best model combination for the specified group
-        current_model_combination = self.Best_Model_Combinations[group]
 
         # Create a Stacking classifier using the best model combination and a meta-model
         try:
             if not use_our_model:
                 stacking_clf = StackingClassifier(
-                    estimators=current_model_combination,
+                    estimators=self.Best_Model_Combinations[group],
                     final_estimator=self.meta_model,
                     stack_method='predict_proba'
                 )
@@ -393,39 +417,30 @@ class StackingModel:
         except Exception as e:
             raise RuntimeError(f"Failed to create StackingClassifier: {e}")
         
-        # Extract the class names from the group string
-        try:
-            Cat_A, Cat_B = group.split(" vs ")
-        except ValueError:
-            raise ValueError("The group format is incorrect; it must be 'A vs B'.")
 
-        # Ensure the feature combination exists for the specified group
-        if f'{Cat_A} vs {Cat_B}' not in self.feature_combination_dict:
-            raise KeyError(f"Feature combination for '{Cat_A} vs {Cat_B}' not found in feature_combination_dict.")
-
-        # Filter the dataset to include only the rows corresponding to the specified classes
-        df_filtered = self.df[self.df['Disease'].isin([Cat_A, Cat_B])]
-        if df_filtered.empty:
-            raise ValueError(f"No data found for the classes '{Cat_A}' and '{Cat_B}'.")
-
-        # Select the features used for this group and the target labels
-        X = df_filtered.drop("Disease", axis=1)
-        X = X[self.feature_combination_dict[f'{Cat_A} vs {Cat_B}']]
-        y = df_filtered['Disease']
-
-        # Shuffle the data and reset indices for randomness
-        X = X.reset_index(drop=True)
-        y = y.reset_index(drop=True)
-        shuffle_index = np.random.permutation(X.index)
-        X = X.iloc[shuffle_index]
-        y = y.iloc[shuffle_index]
-
-        # Map the target labels to binary values (0 for Cat_A, 1 for Cat_B)
-        y = y.map({Cat_A: 0, Cat_B: 1})
-
+    
       # Train the Stacking classifier on the training data
         try:
             if not use_our_model:
+                # Filter the dataset to include only the rows corresponding to the specified classes
+                df_filtered = self.df[self.df['Disease'].isin([Cat_A, Cat_B])]
+                if df_filtered.empty:
+                    raise ValueError(f"No data found for the classes '{Cat_A}' and '{Cat_B}'.")
+
+                # Select the features used for this group and the target labels
+                X = df_filtered.drop("Disease", axis=1)
+                X = X[self.feature_combination_dict[f'{Cat_A} vs {Cat_B}']]
+                y = df_filtered['Disease']
+
+                # Shuffle the data and reset indices for randomness
+                X = X.reset_index(drop=True)
+                y = y.reset_index(drop=True)
+                shuffle_index = np.random.permutation(X.index)
+                X = X.iloc[shuffle_index]
+                y = y.iloc[shuffle_index]
+
+                # Map the target labels to binary values (0 for Cat_A, 1 for Cat_B)
+                y = y.map({Cat_A: 0, Cat_B: 1})
                 print("Stacking Model Training...")
                 stacking_clf.fit(X, y)
             else:
@@ -460,10 +475,14 @@ class StackingModel:
         
         # Validate the new_data_list input
         if not isinstance(new_data_list, list) or not all(isinstance(sample, list) for sample in new_data_list):
-            raise ValueError("new_data_list must be a list of lists, where each inner list contains feature values.")
+            raise ValueError("In multiple prediction new_data_list must be a list of lists, where each inner list contains feature values.")
 
         # Check each sample in new_data_list for correct length
-        feature_names = self.feature_combination_dict[f'{Cat_A} vs {Cat_B}']
+        if not use_our_model:
+            feature_names = self.feature_combination_dict[f'{Cat_A} vs {Cat_B}']
+        else:
+            feature_names = self.our_feature_combinations[f'{Cat_A} vs {Cat_B}']
+        
         for i, new_data in enumerate(new_data_list):
             if len(new_data) != len(feature_names):
                 raise ValueError(f"Sample {i} in new_data_list must have {len(feature_names)} values, corresponding to the required features.")
@@ -476,9 +495,10 @@ class StackingModel:
 
         # Predict the probabilities for each sample in new_data_list
         try:
+            print("Predicting...")
             predictions = stacking_clf.predict_proba(new_data_df)
         except Exception as e:
             raise RuntimeError(f"Failed to predict with StackingClassifier: {e}")
 
         # Convert predictions to a list of arrays and return it
-        return [pred for pred in predictions]
+        return predictions
