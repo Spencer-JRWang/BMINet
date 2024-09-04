@@ -40,7 +40,7 @@ class FeatureSelector:
         elif core_name == "XGBoost":
             return XGBClassifier(n_estimators=1000, max_depth=5)
         elif core_name == "CatBoost":
-            return CatBoostClassifier(verbose=False, iterations=1500, max_depth=5)
+            return CatBoostClassifier(verbose=False, iterations=800, max_depth=5)
         else:
             raise ValueError("Unsupported core. Choose from LightGBM, XGBoost, or CatBoost.")
 
