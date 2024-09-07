@@ -1,5 +1,5 @@
 # Introduction of BMINet
-![framework](Example/image.png)
+<!-- ![framework](Example/image.png) -->
 Machine learning and network based tool for:
 - Classify and predict different disease stages precisely
 - Understand machenism using SHAP model explanation
@@ -121,3 +121,5 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/9/1: Version `0.0.11`, test version, fix a bug
 - 2024/9/3: Version `0.0.12`, test version, fix a bug
 - 2024/9/3: Version `0.0.13`, test version, fix a numpy dependency bug and use_our_model prediction
+- 2024/9/5: Version `0.0.14`, test version, fix CatBoost bug
+- 2024/9/5: Version `0.0.14`, test version, fix CatBoost bug

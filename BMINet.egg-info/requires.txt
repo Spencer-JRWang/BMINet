@@ -1,6 +1,6 @@
 numpy==1.26.0
 pandas
-scikit-learn
+scikit-learn==1.4.0
 networkx
 matplotlib
 scipy

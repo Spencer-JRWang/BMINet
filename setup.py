@@ -9,7 +9,7 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
 # you need to change all these
-VERSION = '0.0.13'
+VERSION = '0.0.15'
 DESCRIPTION = 'Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions'
 LONG_DESCRIPTION = 'Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions'
 
@@ -27,7 +27,7 @@ setup(
     install_requires=[
         'numpy==1.26.0',
         'pandas',
-        'scikit-learn',
+        'scikit-learn==1.4.0',
         'networkx',
         'matplotlib',
         'scipy',

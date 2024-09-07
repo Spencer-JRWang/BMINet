@@ -4,6 +4,7 @@ import numpy as np
 from lightgbm import LGBMClassifier
 from xgboost import XGBClassifier
 from catboost import CatBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold
 from sklearn.feature_selection import RFE
 from sklearn.model_selection import cross_val_score
