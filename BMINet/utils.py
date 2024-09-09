@@ -13,6 +13,7 @@ def convert_to_number(lst):
                 result.append(item)
     return result
 
+
 def plot_multi_his():
     labels = ['A', 'B', 'C', 'D']
     data = np.array([
@@ -40,7 +41,24 @@ def plot_multi_his():
     plt.tight_layout()
     plt.savefig("./multi-class.pdf", format = 'pdf')
     # plt.show()
-    
+
+
+def open_test_data(data_route):
+    f = open(data_route, "r")
+    all_data = []
+    all_data_new = []
+    all_text = f.readlines()
+    for i in all_text:
+        text = i.rstrip("\n")
+        text = text.split("\t")
+        text = text[1:]
+        all_data.append(text)
+    all_data = all_data[1:]
+    for i in all_data:
+        j = convert_to_number(i)
+        all_data_new.append(j)
+    f.close()
+    return all_data_new
 
 if __name__ == "__main__":
     plot_multi_his()
