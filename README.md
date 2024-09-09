@@ -1,5 +1,5 @@
 # Introduction of BMINet
-<!-- ![framework](Example/image.png) -->
+![framework](Example/image.png)
 Machine learning and network based tool for:
 - Classify and predict different disease stages precisely
 - Understand machenism using SHAP model explanation

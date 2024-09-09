@@ -182,7 +182,7 @@ def plot_pca(file_path, output_dir = False):
     plt.show()
     plt.close()
 
-def plot_ml_roc(best_scores, output_dir=False):
+def plot_ml_roc(best_scores, output_dir=False,color_set = "tab10"):
     """
     Plot ROC curves for multiple groups and optionally save the plot as a PDF.
 
@@ -216,7 +216,7 @@ def plot_ml_roc(best_scores, output_dir=False):
     """
     
     # Generate a colormap with a distinct color for each group
-    colors = plt.cm.get_cmap('tab10', len(best_scores))
+    colors = plt.cm.get_cmap(color_set, len(best_scores))
     idx = 0  # Index to track colors
 
     # Create a new figure for plotting
@@ -233,7 +233,7 @@ def plot_ml_roc(best_scores, output_dir=False):
         roc_auc = auc(fpr, tpr)
 
         # Plot the ROC curve for the current group
-        plt.plot(fpr, tpr, color=colors(idx), lw=2, label=f"{group} (AUC = {roc_auc:.2f})")
+        plt.plot(fpr, tpr, color=colors(idx), lw=2, label=f"{group} (AUC = {roc_auc:.3f})")
 
         # Optionally, fill the area under the curve (currently set to transparent)
         plt.fill_between(fpr, tpr, color=colors(idx), alpha=0)
@@ -275,7 +275,7 @@ def plot_ml_roc(best_scores, output_dir=False):
     plt.close()
 
 
-def plot_score_histogram(best_scores, output_dir=False):
+def plot_score_histogram(best_scores, output_dir=False, color_set = "tab10"):
     """
     Plot histograms of predicted scores for each group and optionally save the plot as a PDF.
 
@@ -309,7 +309,7 @@ def plot_score_histogram(best_scores, output_dir=False):
     """
     
     # Generate a colormap with a distinct color for each group
-    colors = plt.cm.get_cmap('tab10', len(best_scores))
+    colors = plt.cm.get_cmap(color_set, len(best_scores))
     plt.figure(figsize=(10, 5))  # Set the figure size
 
     # Loop through each group in best_scores
@@ -351,7 +351,7 @@ def plot_score_histogram(best_scores, output_dir=False):
     plt.close()
 
 
-def plot_precision_recall(best_scores, output_dir=False):
+def plot_precision_recall(best_scores, output_dir=False,color_set = "tab10"):
     """
     Plot Precision-Recall curves for each group in best_scores and optionally save the plot as a PDF.
 
@@ -385,7 +385,7 @@ def plot_precision_recall(best_scores, output_dir=False):
     """
     
     # Generate a colormap with a distinct color for each group
-    colors = plt.cm.get_cmap('tab10', len(best_scores))
+    colors = plt.cm.get_cmap(color_set, len(best_scores))
     plt.figure(figsize=(5, 5))  # Set the figure size
 
     # Loop through each group in best_scores
@@ -394,9 +394,10 @@ def plot_precision_recall(best_scores, output_dir=False):
 
         # Calculate precision-recall curve
         precision, recall, _ = precision_recall_curve(data.iloc[:, 0], data.iloc[:, 1])
+        auprc = auc(recall, precision)
 
         # Plot the precision-recall curve
-        plt.plot(recall, precision, color=colors(idx), lw=2, label=f"{group}")
+        plt.plot(recall, precision, color=colors(idx), lw=2, label=f"{group} (AUPRC = {auprc:.3f})")
 
     # Set the labels and title
     plt.xlabel('Recall')
@@ -426,7 +427,7 @@ def plot_precision_recall(best_scores, output_dir=False):
 
 
 
-def plot_calibration_curve(best_scores, output_dir=False):
+def plot_calibration_curve(best_scores, output_dir=False, color_set = "tab10"):
     """
     Plot calibration curves for each group in best_scores and optionally save the plot as a PDF.
 
@@ -460,7 +461,7 @@ def plot_calibration_curve(best_scores, output_dir=False):
     """
     
     # Generate a colormap with a distinct color for each group
-    colors = plt.cm.get_cmap('tab10', len(best_scores))
+    colors = plt.cm.get_cmap(color_set, len(best_scores))
     plt.figure(figsize=(10, 5))  # Set the figure size
 
     # Loop through each group in best_scores

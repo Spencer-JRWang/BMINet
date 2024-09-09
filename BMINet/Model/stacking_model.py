@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore")
 
 
 class StackingModel:
-    def __init__(self, base_models=None, meta_model=None, cv_splits=5, random_state=42, save = False):
+    def __init__(self, base_models=None, meta_model=None, cv_splits=5, random_state=42):
         """
         Initialize the StackingModel with an output directory, base models, and meta model.
 
@@ -30,15 +30,14 @@ class StackingModel:
 
         # Default base models if not provided
         self.base_models = base_models or [
-            ('RandomForest', RandomForestClassifier(n_estimators=2000, max_depth=5)),
-            ('LGBM', LGBMClassifier(verbose=-1, n_estimators=1000, max_depth=5)),
-            ('XGBoost', XGBClassifier(n_estimators=1000, max_depth=5)),
+            ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5)),
+            ('LGBM', LGBMClassifier(verbose=-1, n_estimators=1500, max_depth=5)),
+            ('XGBoost', XGBClassifier(n_estimators=1500, max_depth=5)),
             ('CatBoost', CatBoostClassifier(verbose=False, iterations=800, max_depth=5))
         ]
         
         # Default meta model if not provided
         self.meta_model = meta_model or LogisticRegression(max_iter=10000000)
-        self.save = save
         self.cv_splits = cv_splits
         self.random_state = random_state
 
@@ -59,34 +58,34 @@ class StackingModel:
             }
         self.our_base_models = {
                 "A vs B":[
-                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1000, max_depth = 5)),
+                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
                 ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
                 ],
 
                 "A vs C":[
-                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1000, max_depth = 5)),
+                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
                 ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
                 ],
 
                 "A vs D":[
-                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1000, max_depth = 5)),
+                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
                 ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
                 ],
 
                 "B vs C":[
-                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1000, max_depth = 5)),
+                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
                 ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
                 ],
 
                 "B vs D":[
-                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1000, max_depth = 5)),
-                ('XGBoost',XGBClassifier(n_estimators = 1000, max_depth = 5)),
+                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
+                ('XGBoost',XGBClassifier(n_estimators = 1500, max_depth = 5)),
                 ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
                 ],
 
                 "C vs D":[
                 ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5)),
-                ('XGBoost',XGBClassifier(n_estimators = 1000, max_depth = 5)),
+                ('XGBoost',XGBClassifier(n_estimators = 1500, max_depth = 5)),
                 ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
                 ]
             }
@@ -133,7 +132,7 @@ class StackingModel:
         dff["IntegratedScore"] = scores_st
         return dff
 
-    def stacking_model_search(self, df, feature_combination_dict, save_format=False):
+    def stacking_model_search(self, df, feature_combination_dict, save_dir=False):
         """
         Search for the best stacking model and evaluate its performance.
 
@@ -173,14 +172,14 @@ class StackingModel:
 
             Best_Model_Combination[f"{Cat_A} vs {Cat_B}"] = list(all_com[AUCs.index(max(AUCs))])
             
-            if self.save:
-                file_path = os.path.join(self.save, f"{Cat_A}_{Cat_B}.txt")
-                best_score_df.to_csv(file_path + f'/{Cat_A} vs {Cat_B}.txt', sep = '\t', index=False)
+            if save_dir:
+                file_path = os.path.join(save_dir, f"{Cat_A}_{Cat_B}.txt")
+                best_score_df.to_csv(file_path, sep = '\t', index=False)
             else:
                 pass
 
             print(f"Best Stacking Model detected: {best_stacking}")
-            # print(f"Best IntegratedScore AUC = {max(AUCs)}")
+            print(f"Best IntegratedScore AUC = {max(AUCs)}")
 
         self.Best_Model_Combinations = Best_Model_Combination
 
@@ -569,12 +568,11 @@ class StackingModel:
                     if score_A_vs_B[1] >= 0.5:
                         if show_route:
                             print("A -> B")
-                        predicted_category = "B"
+                        predicted_category = "Stage B"
                     else:
                         if show_route:
                             print("A <- B")
-                        predicted_category = "A"
-                    predicted_category = "Stage A"
+                        predicted_category = "Stage A"
             print("Final predicted category is:",predicted_category)
             return predicted_category
         else:
@@ -626,7 +624,8 @@ class StackingModel:
                             print("B -> C")
                         predicted_category = "Stage C"
                     else:
-                        print("B <- C")
+                        if show_route:
+                            print("B <- C")
                         predicted_category = "Stage B"
             else:
                 if show_route:
@@ -645,7 +644,8 @@ class StackingModel:
                             print("B -> C")
                         predicted_category = "Stage C"
                     else:
-                        print("B <- C")
+                        if show_route:
+                            print("B <- C")
                         predicted_category = "Stage B"
                 else:
                     if show_route:
@@ -654,12 +654,11 @@ class StackingModel:
                     if score_A_vs_B[1] >= 0.5:
                         if show_route:
                             print("A -> B")
-                        predicted_category = "B"
+                        predicted_category = "Stage B"
                     else:
                         if show_route:
                             print("A <- B")
-                        predicted_category = "A"
-                    predicted_category = "Stage A"
+                        predicted_category = "Stage A"
             print("Final predicted category is:",predicted_category)
             return predicted_category
 
@@ -682,7 +681,7 @@ class StackingModel:
             model_name = f"{class1} vs {class2}"
 
             stacking_clf = StackingClassifier(
-                estimators=self.our_base_models[model_name],
+                estimators=self.Best_Model_Combinations[model_name],
                 final_estimator=self.meta_model,
                 stack_method="predict_proba"
             )
@@ -694,7 +693,7 @@ class StackingModel:
 
             # Select the features used for this pair and the target labels
             X_our = df_filtered_our.drop("Disease", axis=1)
-            X_our = X_our[self.our_feature_combinations[model_name]]
+            X_our = X_our[self.feature_combination_dict[model_name]]
             y_our = df_filtered_our['Disease']
 
             # Shuffle the data and reset indices for randomness
@@ -718,11 +717,13 @@ class StackingModel:
 
 
 
-    def train_all_our_models(self):
-        current_dir = os.path.dirname(__file__)
-        our_data_path = os.path.join(current_dir, 'data_for_ml_ct.txt')
-        df_our = pd.read_csv(our_data_path, sep='\t')
-
+    def train_all_our_models(self, train_on_data = False):
+        if not train_on_data:
+            current_dir = os.path.dirname(__file__)
+            our_data_path = os.path.join(current_dir, 'data_for_ml_ct.txt')
+            df_our = pd.read_csv(our_data_path, sep='\t')
+        else:
+            df_our = pd.read_csv(train_on_data, sep='\t')
         model_pairs = [
             ("A", "B"), 
             ("A", "C"), 
@@ -773,7 +774,7 @@ class StackingModel:
 
 
     
-    def multi_predict_multi_classify(self, new_data, show_route=True, use_our_model = True):
+    def multi_predict_multi_classify(self, new_data, show_route=True, use_our_model = True, train_on_data = False):
         predicted_categories = []
         count = 1
         for i in new_data:
@@ -785,7 +786,7 @@ class StackingModel:
                 
         # Train Our Model
         if use_our_model:
-            model = self.train_all_our_models()
+            model = self.train_all_our_models(train_on_data)
             def extract_data(group_name, all_features, new_data):
                 selected_combination = self.our_feature_combinations[group_name]
                 selected_indices = [all_features.index(feature) for feature in selected_combination]
@@ -861,7 +862,8 @@ class StackingModel:
                                 print("B -> C")
                             predicted_category = "Stage C"
                         else:
-                            print("B <- C")
+                            if show_route:
+                                print("B <- C")
                             predicted_category = "Stage B"
                 else:
                     if show_route:
@@ -880,21 +882,22 @@ class StackingModel:
                                 print("B -> C")
                             predicted_category = "Stage C"
                         else:
-                            print("B <- C")
+                            if show_route:
+                                print("B <- C")
                             predicted_category = "Stage B"
                     else:
                         if show_route:
                             print("A <- C", end = '\t')
+
                         score_A_vs_B = model["A vs B"].predict_proba(data_A_vs_B)
                         if score_A_vs_B[0][1] >= 0.5:
                             if show_route:
                                 print("A -> B")
-                            predicted_category = "B"
+                            predicted_category = "Stage B"
                         else:
                             if show_route:
                                 print("A <- B")
-                            predicted_category = "A"
-                        predicted_category = "Stage A"
+                            predicted_category = "Stage A"
                 print("Final predicted category is:",predicted_category)
                 predicted_categories.append(predicted_category)
                 count += 1
@@ -978,7 +981,8 @@ class StackingModel:
                                 print("B -> C")
                             predicted_category = "Stage C"
                         else:
-                            print("B <- C")
+                            if show_route:
+                                print("B <- C")
                             predicted_category = "Stage B"
                 else:
                     if show_route:
@@ -997,7 +1001,8 @@ class StackingModel:
                                 print("B -> C")
                             predicted_category = "Stage C"
                         else:
-                            print("B <- C")
+                            if show_route:
+                                print("B <- C")
                             predicted_category = "Stage B"
                     else:
                         if show_route:
@@ -1006,12 +1011,11 @@ class StackingModel:
                         if score_A_vs_B[0][1] >= 0.5:
                             if show_route:
                                 print("A -> B")
-                            predicted_category = "B"
+                            predicted_category = "Stage B"
                         else:
                             if show_route:
                                 print("A <- B")
-                            predicted_category = "A"
-                        predicted_category = "Stage A"
+                            predicted_category = "Stage A"
                 print("Final predicted category is:",predicted_category)
                 predicted_categories.append(predicted_category)
                 count += 1
