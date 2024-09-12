@@ -9,7 +9,7 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
 # you need to change all these
-VERSION = '0.0.15'
+VERSION = '0.1.0'
 DESCRIPTION = 'Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions'
 LONG_DESCRIPTION = 'Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions'
 
@@ -23,6 +23,7 @@ setup(
     description=DESCRIPTION,
     long_description_content_type="text/markdown",
     long_description=long_description,
+    url='https://github.com/Spencer-JRWang/BMINet',
     packages=find_packages(),
     install_requires=[
         "anyio==4.4.0",
@@ -131,7 +132,7 @@ setup(
     ],
     include_package_data=True,
     package_data={
-        'BMINet': ['Interaction/*.txt'],
+        'BMINet': ['Interaction/*.txt', 'Model/*.txt'],
     },
     keywords=['python', 'BMINet', 'Interaction', 'Network', 'Bone-Muscle', 'windows', 'mac', 'linux'],
     classifiers=[

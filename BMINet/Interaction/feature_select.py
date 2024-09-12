@@ -12,7 +12,7 @@ from tqdm import tqdm  # Progress bar for loops
 from itertools import combinations  # To generate combinations of disease categories
 
 class FeatureSelector:
-    def __init__(self, core_name="LightGBM"):
+    def __init__(self, core_name="LightGBM", show = False):
         """
         Initialize the FeatureSelector with a core machine learning model.
         
@@ -22,6 +22,7 @@ class FeatureSelector:
         """
         self.core = self._get_core(core_name)  # Initialize the core model based on user input
         self.category_combinations = None  # Placeholder for storing disease category combinations
+        self.show = show
 
     def _get_core(self, core_name):
         """
@@ -45,7 +46,7 @@ class FeatureSelector:
         else:
             raise ValueError("Unsupported core. Choose from LightGBM, XGBoost, or CatBoost.")
 
-    def select(self, df):
+    def select(self, df, show_detail = False):
         """
         Perform feature selection for each pair of disease categories in the dataset.
         
@@ -67,10 +68,11 @@ class FeatureSelector:
             # Filter the DataFrame to include only the current category pair
             df_filtered = df[df['Disease'].isin([cat_A, cat_B])]
             # Perform Recursive Feature Elimination (RFE) and get the best features
-            best_features = self._model_rfe(df_filtered, cat_A, cat_B)
+            best_features, all_score = self._model_rfe(df_filtered, cat_A, cat_B)
             # Store the best features for the current category pair
             dict_groups_features[f'{cat_A} vs {cat_B}'] = best_features
-
+            if show_detail:
+                print(all_score)
         return dict_groups_features
 
     def _model_rfe(self, df, cat_A, cat_B):
@@ -115,4 +117,4 @@ class FeatureSelector:
         print(f"Best Features Combination Detected: {best_features}")
         print(f"Best Validation Score: {max_predict_data}")
 
-        return best_features
+        return best_features, outcome_score

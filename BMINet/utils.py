@@ -16,11 +16,18 @@ def convert_to_number(lst):
 
 def plot_multi_his():
     labels = ['A', 'B', 'C', 'D']
+    # data = np.array([
+    #     [65, 29, 2, 9],   # Group A
+    #     [21, 70, 3, 29],   # Group B
+    #     [4, 44, 8, 22],   # Group C
+    #     [7, 32, 10, 83]    # Group D
+    # ])
+
     data = np.array([
-        [65, 29, 2, 9],   # Group A
-        [21, 70, 3, 29],   # Group B
-        [4, 44, 8, 22],   # Group C
-        [7, 32, 10, 83]    # Group D
+        [20, 1, 0, 0],   # Group A
+        [0, 26, 0, 0],   # Group B
+        [2, 5, 9, 0],   # Group C
+        [0, 0, 0, 26]    # Group D
     ])
 
     data_ratio = data / data.sum(axis=1)[:, None]
@@ -39,7 +46,7 @@ def plot_multi_his():
     
     ax.set_title('Multi-Class Prediction', fontweight='bold')
     plt.tight_layout()
-    plt.savefig("./multi-class.pdf", format = 'pdf')
+    plt.savefig("./multi-class_test.pdf", format = 'pdf')
     # plt.show()
 
 

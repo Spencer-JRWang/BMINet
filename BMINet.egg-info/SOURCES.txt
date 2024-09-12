@@ -17,4 +17,5 @@ BMINet/Interaction/model_explanation.py
 BMINet/Interaction/network_analyzation.py
 BMINet/Interaction/network_construction.py
 BMINet/Model/__init__.py
+BMINet/Model/data_for_ml_ct.txt
 BMINet/Model/stacking_model.py

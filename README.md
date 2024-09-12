@@ -16,7 +16,7 @@ cd BMINet
 pip install .
 ```
 # Example Usage
-- First, you should prepare your data (from CT or MRI etc.): [Example Data](Example/data.txt)
+- First, you should prepare your data (from CT or MRI etc.): [Example Data](https://github.com/Spencer-JRWang/BMINet/blob/main/Example/data.txt)
 - Load your data
 ```python
 import pandas as pd

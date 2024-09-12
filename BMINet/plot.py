@@ -182,7 +182,8 @@ def plot_pca(file_path, output_dir = False):
     plt.show()
     plt.close()
 
-def plot_ml_roc(best_scores, output_dir=False,color_set = "tab10"):
+
+def plot_ml_roc(best_scores, output_dir=False,color_set = "tab10", title = False):
     """
     Plot ROC curves for multiple groups and optionally save the plot as a PDF.
 
@@ -251,7 +252,10 @@ def plot_ml_roc(best_scores, output_dir=False,color_set = "tab10"):
     # Label the axes and set the plot title
     plt.xlabel('Specificity', fontsize=10)
     plt.ylabel('Sensitivity', fontsize=10)
-    plt.title('ROC plot of all groups')
+    if title:
+        plt.title(title, fontweight='bold')
+    else:
+        plt.title('ROC plot of all groups', fontweight='bold')
 
     # Add a grid for better readability
     plt.grid(linestyle="--", color="gray", linewidth=0.5, zorder=0, alpha=0.5)
@@ -327,7 +331,7 @@ def plot_score_histogram(best_scores, output_dir=False, color_set = "tab10"):
     # Set the labels and title
     plt.xlabel('Predicted Score')
     plt.ylabel('Count')
-    plt.title('Histogram of Predicted Scores with Categories')
+    plt.title('Histogram of Predicted Scores with Categories',fontweight='bold')
 
     # Add a legend to the plot
     plt.legend(loc=[0.6, 0.5], fontsize=8)
@@ -351,7 +355,7 @@ def plot_score_histogram(best_scores, output_dir=False, color_set = "tab10"):
     plt.close()
 
 
-def plot_precision_recall(best_scores, output_dir=False,color_set = "tab10"):
+def plot_precision_recall(best_scores, output_dir=False,color_set = "tab10",title = False):
     """
     Plot Precision-Recall curves for each group in best_scores and optionally save the plot as a PDF.
 
@@ -402,7 +406,11 @@ def plot_precision_recall(best_scores, output_dir=False,color_set = "tab10"):
     # Set the labels and title
     plt.xlabel('Recall')
     plt.ylabel('Precision')
-    plt.title('Precision-Recall plot of all groups')
+
+    if title:
+        plt.title(title,fontweight='bold')
+    else:
+        plt.title('Precision-Recall plot of all groups',fontweight='bold')
 
     # Add a legend to the plot
     plt.legend(loc="lower left", fontsize=8)
@@ -480,7 +488,7 @@ def plot_calibration_curve(best_scores, output_dir=False, color_set = "tab10"):
     # Set the labels and title
     plt.xlabel('Mean predicted probability')
     plt.ylabel('Fraction of positives')
-    plt.title('Calibration plot of all groups')
+    plt.title('Calibration plot of all groups',fontweight='bold')
 
     # Add a legend to the plot
     plt.legend(loc="upper left", fontsize=8)
