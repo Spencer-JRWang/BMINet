@@ -279,7 +279,7 @@ def plot_ml_roc(best_scores, output_dir=False,color_set = "tab10", title = False
     plt.close()
 
 
-def plot_score_histogram(best_scores, output_dir=False, color_set = "tab10"):
+def plot_score_histogram(best_scores, output_dir=False, color_set = "tab10", title = False):
     """
     Plot histograms of predicted scores for each group and optionally save the plot as a PDF.
 
@@ -314,7 +314,7 @@ def plot_score_histogram(best_scores, output_dir=False, color_set = "tab10"):
     
     # Generate a colormap with a distinct color for each group
     colors = plt.cm.get_cmap(color_set, len(best_scores))
-    plt.figure(figsize=(10, 5))  # Set the figure size
+    plt.figure(figsize=(8, 4))  # Set the figure size
 
     # Loop through each group in best_scores
     for idx, group in enumerate(best_scores):
@@ -331,8 +331,10 @@ def plot_score_histogram(best_scores, output_dir=False, color_set = "tab10"):
     # Set the labels and title
     plt.xlabel('Predicted Score')
     plt.ylabel('Count')
-    plt.title('Histogram of Predicted Scores with Categories',fontweight='bold')
-
+    if not title:
+        plt.title('Histogram of Predicted Scores with Categories', fontweight='bold')
+    else:
+        plt.title(title, fontweight='bold')
     # Add a legend to the plot
     plt.legend(loc=[0.6, 0.5], fontsize=8)
 
@@ -435,7 +437,7 @@ def plot_precision_recall(best_scores, output_dir=False,color_set = "tab10",titl
 
 
 
-def plot_calibration_curve(best_scores, output_dir=False, color_set = "tab10"):
+def plot_calibration_curve(best_scores, output_dir=False, color_set = "tab10", title = False):
     """
     Plot calibration curves for each group in best_scores and optionally save the plot as a PDF.
 
@@ -470,7 +472,7 @@ def plot_calibration_curve(best_scores, output_dir=False, color_set = "tab10"):
     
     # Generate a colormap with a distinct color for each group
     colors = plt.cm.get_cmap(color_set, len(best_scores))
-    plt.figure(figsize=(10, 5))  # Set the figure size
+    plt.figure(figsize=(8, 4))  # Set the figure size
 
     # Loop through each group in best_scores
     for idx, group in enumerate(best_scores):
@@ -488,7 +490,10 @@ def plot_calibration_curve(best_scores, output_dir=False, color_set = "tab10"):
     # Set the labels and title
     plt.xlabel('Mean predicted probability')
     plt.ylabel('Fraction of positives')
-    plt.title('Calibration plot of all groups',fontweight='bold')
+    if not title:
+        plt.title('Calibration plot of all groups',fontweight='bold')
+    else:
+        plt.title(title,fontweight='bold')
 
     # Add a legend to the plot
     plt.legend(loc="upper left", fontsize=8)

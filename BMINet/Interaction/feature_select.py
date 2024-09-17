@@ -12,7 +12,7 @@ from tqdm import tqdm  # Progress bar for loops
 from itertools import combinations  # To generate combinations of disease categories
 
 class FeatureSelector:
-    def __init__(self, core_name="LightGBM", show = False):
+    def __init__(self, estimator_num = 1000, depth = 5,core_name="LightGBM", show = False):
         """
         Initialize the FeatureSelector with a core machine learning model.
         
@@ -20,9 +20,11 @@ class FeatureSelector:
         core_name (str): The name of the core model to use for feature selection. 
                          Options are "LightGBM", "XGBoost", or "CatBoost".
         """
-        self.core = self._get_core(core_name)  # Initialize the core model based on user input
         self.category_combinations = None  # Placeholder for storing disease category combinations
         self.show = show
+        self.estimator_num = estimator_num
+        self.depth = depth
+        self.core = self._get_core(core_name)  # Initialize the core model based on user input
 
     def _get_core(self, core_name):
         """
@@ -38,15 +40,15 @@ class FeatureSelector:
         ValueError: If the core_name is not one of the supported options.
         """
         if core_name == "LightGBM": 
-            return LGBMClassifier(n_estimators=1000, max_depth=5, verbose=-1)
+            return LGBMClassifier(n_estimators=self.estimator_num, max_depth=self.depth, verbose=-1)
         elif core_name == "XGBoost":
-            return XGBClassifier(n_estimators=1000, max_depth=5)
+            return XGBClassifier(n_estimators=self.estimator_num, max_depth=self.depth)
         elif core_name == "CatBoost":
-            return CatBoostClassifier(verbose=False, iterations=800, max_depth=5)
+            return CatBoostClassifier(verbose=False, iterations=self.estimator_num, max_depth=self.depth)
         else:
             raise ValueError("Unsupported core. Choose from LightGBM, XGBoost, or CatBoost.")
 
-    def select(self, df, show_detail = False):
+    def select(self, df, show_detail = False, estimator_num = 1000, depth = 5):
         """
         Perform feature selection for each pair of disease categories in the dataset.
         

@@ -30,10 +30,10 @@ class StackingModel:
 
         # Default base models if not provided
         self.base_models = base_models or [
-            ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5)),
-            ('LGBM', LGBMClassifier(verbose=-1, n_estimators=1500, max_depth=5)),
-            ('XGBoost', XGBClassifier(n_estimators=1500, max_depth=5)),
-            ('CatBoost', CatBoostClassifier(verbose=False, iterations=800, max_depth=5))
+            ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=10)),
+            ('LGBM', LGBMClassifier(verbose=-1, n_estimators=1500, max_depth=10)),
+            ('XGBoost', XGBClassifier(n_estimators=1500, max_depth=10)),
+            ('CatBoost', CatBoostClassifier(verbose=False, iterations=800, max_depth=10))
         ]
         
         # Default meta model if not provided
@@ -41,7 +41,7 @@ class StackingModel:
         self.cv_splits = cv_splits
         self.random_state = random_state
 
-        self.all_features = ['L1', 'L2', 'L3', 'L4', 'L5', 'S1', 'L1-L2_1', 'L1-L2_2',
+        self.all_features = ['Gender_Female', 'Gender_Male','Age', 'L1', 'L2', 'L3', 'L4', 'L5', 'S1', 'L1-L2_1', 'L1-L2_2',
                             'L1-L2_3', 'L1-L2_4', 'L1-L2_5', 'L1-L2_6', 'L2-L3_1', 'L2-L3_2',
                             'L2-L3_3', 'L2-L3_4', 'L2-L3_5', 'L2-L3_6', 'L3-L4_1', 'L3-L4_2',
                             'L3-L4_3', 'L3-L4_4', 'L3-L4_5', 'L3-L4_6', 'L4-L5_1', 'L4-L5_2',
@@ -180,6 +180,7 @@ class StackingModel:
         self.df = df
         self.feature_combination_dict = feature_combination_dict
         categories = list(combinations(df['Disease'].unique(), 2))
+        self.categories = categories
         Best_Scores = {}
         Best_Model_Combination = {}
         
@@ -396,15 +397,6 @@ class StackingModel:
             # Ensure the group exists in Best_Model_Combinations
             if group not in self.our_base_models:
                 raise KeyError(f"The group '{group}' was not found in Best_Model_Combinations.")
-
-            self.our_feature_combinations = {
-                "A vs B": ['L1', 'L4', 'L5', 'S1', 'L1-L2_3', 'L2-L3_2', 'L2-L3_6', 'L3-L4_2', 'L4-L5_1', 'L4-L5_3'],
-                "A vs C": ['L1', 'L4', 'L1-L2_3', 'L2-L3_4', 'L2-L3_5', 'L3-L4_1', 'L4-L5_1', 'L5-S1_4'],
-                "A vs D": ['L1', 'L2', 'L4', 'L5', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_3', 'L2-L3_5', 'L3-L4_5', 'L4-L5_1', 'L4-L5_3', 'L4-L5_4', 'L4-L5_5'],
-                "B vs C": ['L3', 'L5', 'S1', 'L1-L2_1', 'L1-L2_6', 'L2-L3_3', 'L2-L3_6', 'L3-L4_2', 'L3-L4_3', 'L4-L5_2', 'L4-L5_3', 'L4-L5_4', 'L4-L5_5'],
-                "B vs D": ['L1', 'L5', 'S1', 'L1-L2_5', 'L1-L2_6', 'L2-L3_1', 'L2-L3_2', 'L2-L3_3', 'L2-L3_6', 'L3-L4_1', 'L3-L4_6', 'L4-L5_1', 'L4-L5_3'],
-                "C vs D": ['L1', 'L2', 'L5', 'S1', 'L1-L2_2', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_2', 'L2-L3_3', 'L2-L3_4', 'L3-L4_1', 'L3-L4_2', 'L3-L4_3', 'L3-L4_6', 'L4-L5_2', 'L4-L5_5', 'L5-S1_1', 'L5-S1_4']
-            }
             # Ensure the feature combination exists for the specified group
             if f'{Cat_A} vs {Cat_B}' not in self.our_feature_combinations:
                 raise KeyError(f"Feature combination for '{Cat_A} vs {Cat_B}' not found in feature_combination_dict.")
@@ -524,6 +516,48 @@ class StackingModel:
 
         # Convert predictions to a list of arrays and return it
         return predictions
+
+    def performance_on_test(self, test_data, save_dir = False):
+        # Prepare Test Data
+        from ..utils import open_test_data
+        new_data = open_test_data(test_data)
+        from ..utils import extract_data
+        Scores = {}
+        for com in self.categories:
+            data = []
+            Cat_A = com[0]
+            Cat_B = com[1]
+            for i in new_data:
+                if i[0] == Cat_A or i[0] == Cat_B:
+                    data.append(i[1:])
+                else:
+                    pass
+            data_1 = []
+            for individual in data:
+                data_1.append(extract_data(self.feature_combination_dict[f"{Cat_A} vs {Cat_B}"], individual))
+            # print(data_1)
+            score = self.multiple_predict(f"{Cat_A} vs {Cat_B}", data_1, use_our_model=False)
+            score = [i[1] for i in score]
+            df = pd.read_csv(test_data, sep = '\t')
+            df = df[df['Disease'].isin([Cat_A, Cat_B])]
+            a = df['Disease'].map({Cat_A: 0, Cat_B: 1})
+            dff = a.to_frame()
+            dff["IntegratedScore"] = score
+
+            fpr, tpr, _ = roc_curve(dff.iloc[:, 0], dff["IntegratedScore"])
+            roc_auc = auc(fpr, tpr)
+            print(f"AUC of {Cat_A} vs {Cat_B} in test data is: {roc_auc}")
+
+            # Save results if save_dir is provided
+            if save_dir and isinstance(save_dir, str):
+                file_path = os.path.join(save_dir, f"{Cat_A}_{Cat_B}.txt")
+                dff.to_csv(file_path, sep='\t', index=False)
+            else:
+                pass
+            Scores[f"{Cat_A} vs {Cat_B}"] = dff
+        return Scores
+
+
 
     def single_predict_multi_classify(self, new_data, show_route=True, use_our_model = True):
         predicted_category = None

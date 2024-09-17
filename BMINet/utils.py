@@ -58,7 +58,6 @@ def open_test_data(data_route):
     for i in all_text:
         text = i.rstrip("\n")
         text = text.split("\t")
-        text = text[1:]
         all_data.append(text)
     all_data = all_data[1:]
     for i in all_data:
@@ -66,6 +65,39 @@ def open_test_data(data_route):
         all_data_new.append(j)
     f.close()
     return all_data_new
+
+
+
+def extract_data(selected_combination, new_data):
+    all_features = ['Gender_Female', 'Gender_Male', 'Age', 'L1', 'L2', 'L3', 'L4', 'L5', 'S1', 'L1-L2_1', 'L1-L2_2',
+                            'L1-L2_3', 'L1-L2_4', 'L1-L2_5', 'L1-L2_6', 'L2-L3_1', 'L2-L3_2',
+                            'L2-L3_3', 'L2-L3_4', 'L2-L3_5', 'L2-L3_6', 'L3-L4_1', 'L3-L4_2',
+                            'L3-L4_3', 'L3-L4_4', 'L3-L4_5', 'L3-L4_6', 'L4-L5_1', 'L4-L5_2',
+                            'L4-L5_3', 'L4-L5_4', 'L4-L5_5', 'L4-L5_6', 'L5-S1_1', 'L5-S1_2',
+                            'L5-S1_3', 'L5-S1_4', 'L5-S1_5', 'L5-S1_6']
+    selected_indices = [all_features.index(feature) for feature in selected_combination]
+    selected_data = [new_data[i] for i in selected_indices]
+    return selected_data
+
+import pandas as pd
+from sklearn.model_selection import StratifiedKFold
+
+def train_test_data(file_path,save_path):
+    df_all = pd.read_csv(file_path, sep='\t')
+    group_column = df_all.columns[0]
+    groups = df_all[group_column]
+
+    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+    fold = 1
+    
+    for train_index, test_index in kf.split(df_all, groups):
+        train_data = df_all.iloc[train_index]
+        test_data = df_all.iloc[test_index]
+        train_data.to_csv(f'{save_path}/train_fold_{fold}.txt', sep='\t', index=False)
+        test_data.to_csv(f'{save_path}/test_fold_{fold}.txt', sep='\t', index=False)
+        
+        fold += 1
 
 if __name__ == "__main__":
     plot_multi_his()

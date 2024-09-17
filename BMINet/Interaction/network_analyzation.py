@@ -4,7 +4,6 @@ import community as community_louvain
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
-import community as community_louvain
 import os
 
 class NetworkVisualizer:
