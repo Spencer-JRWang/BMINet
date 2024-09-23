@@ -80,7 +80,8 @@ class NetworkConstructor:
                     "verbose": -1,
                     "boost_from_average": True,
                     "early_stopping_rounds": 50,
-                    "verbose_eval": 1000
+                    "verbose_eval": 1000,
+                    "class_weight": 'balanced'
                 }
                 model = lgb.train(
                     params,

@@ -238,3 +238,4 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/9/3: Version `0.0.13`, test version, fix a numpy dependency bug and use_our_model prediction
 - 2024/9/5: Version `0.0.14`, test version, fix CatBoost bug
 - 2024/9/5: Version `0.0.14`, test version, fix CatBoost bug
+- 2024/9/5: Version `0.1.0`, test version, fix CatBoost bug

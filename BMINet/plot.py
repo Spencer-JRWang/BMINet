@@ -336,7 +336,7 @@ def plot_score_histogram(best_scores, output_dir=False, color_set = "tab10", tit
     else:
         plt.title(title, fontweight='bold')
     # Add a legend to the plot
-    plt.legend(loc=[0.6, 0.5], fontsize=8)
+    plt.legend(loc=[0.55, 0.3], fontsize=8)
 
     # Add a grid for better readability
     plt.grid(linestyle="--", color="gray", linewidth=0.5, zorder=0, alpha=0.5)

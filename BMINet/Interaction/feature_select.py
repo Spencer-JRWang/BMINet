@@ -40,9 +40,9 @@ class FeatureSelector:
         ValueError: If the core_name is not one of the supported options.
         """
         if core_name == "LightGBM": 
-            return LGBMClassifier(n_estimators=self.estimator_num, max_depth=self.depth, verbose=-1)
+            return LGBMClassifier(n_estimators=self.estimator_num, max_depth=self.depth, verbose=-1, class_weight='balanced')
         elif core_name == "XGBoost":
-            return XGBClassifier(n_estimators=self.estimator_num, max_depth=self.depth)
+            return XGBClassifier(n_estimators=self.estimator_num, max_depth=self.depth, class_weight = 'balanced')
         elif core_name == "CatBoost":
             return CatBoostClassifier(verbose=False, iterations=self.estimator_num, max_depth=self.depth)
         else:

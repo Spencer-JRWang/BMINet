@@ -30,9 +30,9 @@ class StackingModel:
 
         # Default base models if not provided
         self.base_models = base_models or [
-            ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=10)),
-            ('LGBM', LGBMClassifier(verbose=-1, n_estimators=1500, max_depth=10)),
-            ('XGBoost', XGBClassifier(n_estimators=1500, max_depth=10)),
+            ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=10,class_weight='balanced')),
+            ('LGBM', LGBMClassifier(verbose=-1, n_estimators=1500, max_depth=10,class_weight='balanced')),
+            ('XGBoost', XGBClassifier(n_estimators=1500, max_depth=10,class_wight = 'balanced')),
             ('CatBoost', CatBoostClassifier(verbose=False, iterations=800, max_depth=10))
         ]
         
@@ -181,12 +181,13 @@ class StackingModel:
         self.feature_combination_dict = feature_combination_dict
         categories = list(combinations(df['Disease'].unique(), 2))
         self.categories = categories
+        self.cate_threholds = {}
         Best_Scores = {}
         Best_Model_Combination = {}
         
         for Cat_A, Cat_B in categories:
             all_com = self.model_combinations()
-            FPR, TPR, AUCs, Scores = [], [], [], []
+            FPR, TPR, Thresholds, AUCs, Scores = [], [], [], []
 
             df_subset = df[df['Disease'].isin([Cat_A, Cat_B])]
             print(f"Stacking model is building for {Cat_A} vs {Cat_B}...")
@@ -196,16 +197,27 @@ class StackingModel:
             for m in tqdm(all_com):
                 IntegratedScore = self.stacking_model(df_subset[best_features], df_subset['Disease'].map({Cat_A: 0, Cat_B: 1}), list(m))
                 Scores.append(IntegratedScore)
-                fpr, tpr, _ = roc_curve(IntegratedScore.iloc[:, 0], IntegratedScore["IntegratedScore"])
+                fpr, tpr, thresholds = roc_curve(IntegratedScore.iloc[:, 0], IntegratedScore["IntegratedScore"])
                 roc_auc = auc(fpr, tpr)
                 AUCs.append(roc_auc)
                 FPR.append(fpr)
                 TPR.append(tpr)
+                Thresholds.append(thresholds)
 
             best_idx = AUCs.index(max(AUCs))
             best_stacking = [t[0] for t in all_com[best_idx]]
             best_score_df = Scores[best_idx]
             Best_Scores[f"{Cat_A} vs {Cat_B}"] = best_score_df
+
+            best_fpr = FPR[best_idx]
+            best_tpr = TPR[best_idx]
+            best_threholds = Thresholds[best_idx]
+            J = best_tpr - best_fpr
+
+            # find max J
+            best_index = np.argmax(J)
+            best_cutoff = best_threholds[best_index]
+            self.cate_threholds[f"{Cat_A} vs {Cat_B}"] = best_cutoff
 
             Best_Model_Combination[f"{Cat_A} vs {Cat_B}"] = list(all_com[AUCs.index(max(AUCs))])
             
@@ -367,6 +379,9 @@ class StackingModel:
         print(f"The probability of group {Cat_A} is {prediction[0]}")
         print(f"The probability of group {Cat_B} is {prediction[1]}")
         return prediction
+    
+    def show_threholds(self):
+        print(self.cate_threholds)
 
     def multiple_predict(self, group, new_data_list, use_our_model = False):
         """
@@ -561,8 +576,8 @@ class StackingModel:
 
     def single_predict_multi_classify(self, new_data, show_route=True, use_our_model = True):
         predicted_category = None
-        if len(new_data) != 36:
-            raise ValueError("new_data should contain 36 objects")
+        if len(new_data) != 39:
+            raise ValueError("new_data should contain 39 objects")
         if use_our_model:
             model = self
 
@@ -663,19 +678,19 @@ class StackingModel:
 
             # A vs D
             score_A_vs_D = model.single_predict("A vs D", data_A_vs_D, use_our_model = False)
-            if score_A_vs_D[1] >= 0.5:
+            if score_A_vs_D[1] >= self.cate_threholds["A vs D"]:
                 if show_route:
                     print("A -> D")
 
                 # B vs D
                 score_B_vs_D = model.single_predict("B vs D", data_B_vs_D, use_our_model = False)
-                if score_B_vs_D[1] >= 0.5:
+                if score_B_vs_D[1] >= self.cate_threholds["B vs D"]:
                     if show_route:
                         print("B -> D")
 
                     # C vs D
                     score_C_vs_D = model.single_predict("C vs D", data_C_vs_D, use_our_model = False)
-                    if score_C_vs_D[1] >= 0.5:
+                    if score_C_vs_D[1] >= self.cate_threholds["C vs D"]:
                         if show_route:
                             print("C -> D")
                         predicted_category = "Stage D"
@@ -689,7 +704,7 @@ class StackingModel:
 
                     # B vs C
                     score_B_vs_C = model.single_predict("B vs C", data_B_vs_C, use_our_model = False)
-                    if score_B_vs_C[1] >= 0.5:
+                    if score_B_vs_C[1] >= self.cate_threholds["B vs C"]:
                         if show_route:
                             print("B -> C")
                         predicted_category = "Stage C"
@@ -703,13 +718,13 @@ class StackingModel:
 
                 # A vs C
                 score_A_vs_C = model.single_predict("A vs C", data_A_vs_C, use_our_model = False)
-                if score_A_vs_C[1] >= 0.5:
+                if score_A_vs_C[1] >= self.cate_threholds["A vs C"]:
                     if show_route:
                         print("A -> C")
 
                     # B vs C
                     score_B_vs_C = model.single_predict("B vs C", data_B_vs_C, use_our_model = False)
-                    if score_B_vs_C[1] >= 0.5:
+                    if score_B_vs_C[1] >= self.cate_threholds["B vs C"]:
                         if show_route:
                             print("B -> C")
                         predicted_category = "Stage C"
@@ -721,7 +736,7 @@ class StackingModel:
                     if show_route:
                         print("A <- C")
                     score_A_vs_B = model.single_predict("A vs B", data_A_vs_B, use_our_model = False)
-                    if score_A_vs_B[1] >= 0.5:
+                    if score_A_vs_B[1] >= self.cate_threholds["A vs B"]:
                         if show_route:
                             print("A -> B")
                         predicted_category = "Stage B"
@@ -848,11 +863,11 @@ class StackingModel:
         predicted_categories = []
         count = 1
         for i in new_data:
-            if len(i) != 36:
-                raise ValueError("new_data should contain 36 objects")
+            if len(i) != 39:
+                raise ValueError("new_data should contain 39 objects")
             for j in i:
-                if not isinstance(j, float) and not isinstance(j, int) and j != None:
-                    raise ValueError("Invalid data type in new_data, it should only be int, float or None")
+                if not isinstance(j, float) and not isinstance(j, int) and j != None and j != True and j != False and j!= "True" and j != "False":
+                    raise ValueError("Invalid data type in new_data, it should only be int, float, True/False or None")
                 
         # Train Our Model
         if use_our_model:
@@ -926,7 +941,7 @@ class StackingModel:
                             print("B <- D", end = '\t')
 
                         # B vs C
-                        score_B_vs_C = model["B vs D"].predict_proba(data_B_vs_D)
+                        score_B_vs_C = model["B vs C"].predict_proba(data_B_vs_C)
                         if score_B_vs_C[0][1] >= 0.5:
                             if show_route:
                                 print("B -> C")
@@ -1020,19 +1035,19 @@ class StackingModel:
                 print(f"========== Predicting Individual {count} ==========")
                 # A vs D
                 score_A_vs_D = model["A vs D"].predict_proba(data_A_vs_D)
-                if score_A_vs_D[0][1] >= 0.5:
+                if score_A_vs_D[0][1] >= self.cate_threholds["A vs D"]:
                     if show_route:
                         print("A -> D", end = '\t')
 
                     # B vs D
                     score_B_vs_D = model["B vs D"].predict_proba(data_B_vs_D)
-                    if score_B_vs_D[0][1] >= 0.5:
+                    if score_B_vs_D[0][1] >= self.cate_threholds["B vs D"]:
                         if show_route:
                             print("B -> D", end = '\t')
 
                         # C vs D
                         score_C_vs_D = model["C vs D"].predict_proba(data_C_vs_D)
-                        if score_C_vs_D[0][1] >= 0.5:
+                        if score_C_vs_D[0][1] >= self.cate_threholds["C vs D"]:
                             if show_route:
                                 print("C -> D")
                             predicted_category = "Stage D"
@@ -1045,8 +1060,8 @@ class StackingModel:
                             print("B <- D", end = '\t')
 
                         # B vs C
-                        score_B_vs_C = model["B vs D"].predict_proba(data_B_vs_D)
-                        if score_B_vs_C[0][1] >= 0.5:
+                        score_B_vs_C = model["B vs C"].predict_proba(data_B_vs_C)
+                        if score_B_vs_C[0][1] >= self.cate_threholds["B vs C"]:
                             if show_route:
                                 print("B -> C")
                             predicted_category = "Stage C"
@@ -1060,13 +1075,13 @@ class StackingModel:
 
                     # A vs C
                     score_A_vs_C = model["A vs C"].predict_proba(data_A_vs_C)
-                    if score_A_vs_C[0][1] >= 0.5:
+                    if score_A_vs_C[0][1] >= self.cate_threholds["A vs C"]:
                         if show_route:
                             print("A -> C", end = '\t')
 
                         # B vs C
                         score_B_vs_C = model["B vs C"].predict_proba(data_B_vs_C)
-                        if score_B_vs_C[0][1] >= 0.5:
+                        if score_B_vs_C[0][1] >= self.cate_threholds["B vs C"]:
                             if show_route:
                                 print("B -> C")
                             predicted_category = "Stage C"
@@ -1078,7 +1093,7 @@ class StackingModel:
                         if show_route:
                             print("A <- C", end = '\t')
                         score_A_vs_B = model["A vs B"].predict_proba(data_A_vs_B)
-                        if score_A_vs_B[0][1] >= 0.5:
+                        if score_A_vs_B[0][1] >= self.cate_threholds["A vs B"]:
                             if show_route:
                                 print("A -> B")
                             predicted_category = "Stage B"

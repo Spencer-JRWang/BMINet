@@ -6,6 +6,10 @@ def convert_to_number(lst):
     for item in lst:
         if item == '':
             result.append(None)
+        elif item == 'True':
+            result.append(True)
+        elif item == 'False':
+            result.append(False)
         else:
             try:
                 result.append(float(item))
@@ -50,7 +54,7 @@ def plot_multi_his():
     # plt.show()
 
 
-def open_test_data(data_route):
+def open_test_data(data_route, with_category = True):
     f = open(data_route, "r")
     all_data = []
     all_data_new = []
@@ -58,7 +62,10 @@ def open_test_data(data_route):
     for i in all_text:
         text = i.rstrip("\n")
         text = text.split("\t")
-        all_data.append(text)
+        if with_category:
+            all_data.append(text)
+        else:
+            all_data.append(text[1:])
     all_data = all_data[1:]
     for i in all_data:
         j = convert_to_number(i)
