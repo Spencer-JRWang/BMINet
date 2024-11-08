@@ -11,6 +11,7 @@ from matplotlib.patches import Ellipse
 from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import precision_recall_curve
 from sklearn.calibration import calibration_curve
+from scipy import stats
 
 
 def plot_single_roc(file_path, output_dir_pdf = False):
@@ -515,3 +516,83 @@ def plot_calibration_curve(best_scores, output_dir=False, color_set = "tab10", t
 
     # Close the plot to free up memory
     plt.close()
+
+
+
+def age_peak(data_path, ci=95, plot = False):
+    """
+    Function to calculate the peak and 95% confidence interval for age data by group,
+    and plot the histogram and density plot for each group.
+
+    Parameters:
+    data_path (str): The file path to the Excel file containing the data.
+    output_path (str): The file path to save the generated plot as a PDF.
+    ci (int): Confidence interval percentage, default is 95%.
+
+    Returns:
+    group_peak_ci (dict): Dictionary storing the peak value and confidence interval for each group.
+    """
+    
+    # Read the Excel file containing the data
+    data = pd.read_excel(data_path)
+
+    # Define a function to calculate peak and 95% confidence interval
+    def peak_and_ci(group_data, ci=95):
+        # Calculate KDE
+        kde = stats.gaussian_kde(group_data)
+
+        # Find the peak value of the KDE
+        x_range = np.linspace(min(group_data), max(group_data), 1000)
+        kde_values = kde(x_range)
+        peak_value = x_range[np.argmax(kde_values)]
+
+        # Calculate the 95% confidence interval
+        lower_bound = np.percentile(group_data, (100 - ci) / 2)
+        upper_bound = np.percentile(group_data, 100 - (100 - ci) / 2)
+
+        return peak_value, (lower_bound, upper_bound)
+
+    # Create a dictionary to store the peak and confidence interval for each group
+    group_peak_ci = {}
+
+    # Get unique groups from the data
+    groups = data['Group'].unique()
+
+    # Loop over each group and calculate the peak and confidence interval
+    for group in groups:
+        group_data = data[data['Group'] == group]['age']
+        peak, (ci_lower, ci_upper) = peak_and_ci(group_data, ci)
+        group_peak_ci[group] = {'peak': peak, '95% CI': (ci_lower, ci_upper)}
+
+    # Print the peak and 95% confidence interval for each group
+    for group, values in group_peak_ci.items():
+        print(f"Group: {group}, Peak: {values['peak']:.2f}, 95% CI: ({values['95% CI'][0]:.2f}, {values['95% CI'][1]:.2f})")
+
+    # Set a custom color palette for the plot
+    custom_palette = ["#8ECFC9", "#FFBE7A", "#FA7F6F", "#82B0D2"]
+
+    if plot:
+        # Create the plot
+        plt.figure(figsize=(8, 4))
+
+        # Plot histogram and density plot for each group
+        for group, color in zip(groups, custom_palette):
+            # Plot histogram with transparency to avoid conflict with density plot
+            sns.histplot(data[data['Group'] == group], x='age', color=color, kde=False, 
+                        bins=10, stat="density", alpha=0.3, element="bars", linewidth=0)
+            # Plot density plot
+            sns.kdeplot(data[data['Group'] == group], x='age', color=color, fill=True, 
+                        alpha=0.1, linewidth=2, label=f'Group {group}')
+
+        # Add legend and titles
+        plt.title('Density Plot with Histogram of Age by Disease Groups', fontweight='bold')
+        plt.xlabel('Age')
+        plt.ylabel('Density')
+        plt.grid(linestyle="--", color="gray", linewidth=0.5, zorder=0, alpha=0.5)
+        plt.legend(title='Group', loc='upper right')
+        plt.tight_layout()
+
+        # Save and show the plot
+        plt.savefig(plot)
+    return group_peak_ci
+

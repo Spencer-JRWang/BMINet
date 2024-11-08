@@ -48,84 +48,84 @@ class StackingModel:
                             'L4-L5_3', 'L4-L5_4', 'L4-L5_5', 'L4-L5_6', 'L5-S1_1', 'L5-S1_2',
                             'L5-S1_3', 'L5-S1_4', 'L5-S1_5', 'L5-S1_6'
                 ]
-        # self.our_feature_combinations = {
-        #         "A vs B": ['L1', 'L4', 'L5', 'S1', 'L1-L2_3', 'L2-L3_2', 'L2-L3_6', 'L3-L4_2', 'L4-L5_1', 'L4-L5_3'],
-        #         "A vs C": ['L1', 'L4', 'L1-L2_3', 'L2-L3_4', 'L2-L3_5', 'L3-L4_1', 'L4-L5_1', 'L5-S1_4'],
-        #         "A vs D": ['L1', 'L2', 'L4', 'L5', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_3', 'L2-L3_5', 'L3-L4_5', 'L4-L5_1', 'L4-L5_3', 'L4-L5_4', 'L4-L5_5'],
-        #         "B vs C": ['L3', 'L5', 'S1', 'L1-L2_1', 'L1-L2_6', 'L2-L3_3', 'L2-L3_6', 'L3-L4_2', 'L3-L4_3', 'L4-L5_2', 'L4-L5_3', 'L4-L5_4', 'L4-L5_5'],
-        #         "B vs D": ['L1', 'L5', 'S1', 'L1-L2_5', 'L1-L2_6', 'L2-L3_1', 'L2-L3_2', 'L2-L3_3', 'L2-L3_6', 'L3-L4_1', 'L3-L4_6', 'L4-L5_1', 'L4-L5_3'],
-        #         "C vs D": ['L1', 'L2', 'L5', 'S1', 'L1-L2_2', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_2', 'L2-L3_3', 'L2-L3_4', 'L3-L4_1', 'L3-L4_2', 'L3-L4_3', 'L3-L4_6', 'L4-L5_2', 'L4-L5_5', 'L5-S1_1', 'L5-S1_4']
-        #     }
         self.our_feature_combinations = {
-                "A vs B": ['L1', 'L2', 'L3', 'L4', 'L5', 'S1', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_2', 'L2-L3_6', 'L3-L4_2', 'L3-L4_4', 'L4-L5_1', 'L4-L5_3', 'L4-L5_5'],
-                "A vs C": ['L1', 'L2', 'L4', 'L5', 'L1-L2_1', 'L1-L2_3', 'L1-L2_6', 'L2-L3_2', 'L2-L3_3', 'L2-L3_4', 'L2-L3_5', 'L2-L3_6', 'L3-L4_1', 'L3-L4_3', 'L3-L4_4', 'L4-L5_1', 'L4-L5_2', 'L4-L5_3', 'L4-L5_5', 'L5-S1_4'],
-                "A vs D": ['L1', 'L2', 'L4', 'L5', 'L1-L2_3', 'L1-L2_6', 'L2-L3_3', 'L2-L3_5', 'L3-L4_5', 'L4-L5_1', 'L4-L5_3', 'L4-L5_4'],
-                "B vs C": ['L3', 'L4', 'L5', 'S1', 'L1-L2_1', 'L1-L2_3', 'L1-L2_4', 'L1-L2_5', 'L1-L2_6', 'L2-L3_2', 'L2-L3_3', 'L2-L3_6', 'L3-L4_2', 'L3-L4_3', 'L3-L4_5', 'L3-L4_6', 'L4-L5_1', 'L4-L5_2', 'L4-L5_3', 'L4-L5_4', 'L4-L5_5', 'L5-S1_1'],
-                "B vs D": ['L1', 'L5', 'S1', 'L1-L2_5', 'L1-L2_6', 'L2-L3_1', 'L2-L3_2', 'L2-L3_3', 'L2-L3_6', 'L3-L4_1', 'L3-L4_6', 'L4-L5_3'],
-                "C vs D": ['L1', 'L2', 'L5', 'S1', 'L1-L2_3', 'L1-L2_4', 'L2-L3_2', 'L3-L4_1', 'L3-L4_3', 'L4-L5_2', 'L4-L5_5', 'L5-S1_4']
+                "A vs B": ['L1', 'L4', 'L5', 'S1', 'L1-L2_3', 'L2-L3_2', 'L2-L3_6', 'L3-L4_2', 'L4-L5_1', 'L4-L5_3'],
+                "A vs C": ['L1', 'L4', 'L1-L2_3', 'L2-L3_4', 'L2-L3_5', 'L3-L4_1', 'L4-L5_1', 'L5-S1_4'],
+                "A vs D": ['L1', 'L2', 'L4', 'L5', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_3', 'L2-L3_5', 'L3-L4_5', 'L4-L5_1', 'L4-L5_3', 'L4-L5_4', 'L4-L5_5'],
+                "B vs C": ['L3', 'L5', 'S1', 'L1-L2_1', 'L1-L2_6', 'L2-L3_3', 'L2-L3_6', 'L3-L4_2', 'L3-L4_3', 'L4-L5_2', 'L4-L5_3', 'L4-L5_4', 'L4-L5_5'],
+                "B vs D": ['L1', 'L5', 'S1', 'L1-L2_5', 'L1-L2_6', 'L2-L3_1', 'L2-L3_2', 'L2-L3_3', 'L2-L3_6', 'L3-L4_1', 'L3-L4_6', 'L4-L5_1', 'L4-L5_3'],
+                "C vs D": ['L1', 'L2', 'L5', 'S1', 'L1-L2_2', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_2', 'L2-L3_3', 'L2-L3_4', 'L3-L4_1', 'L3-L4_2', 'L3-L4_3', 'L3-L4_6', 'L4-L5_2', 'L4-L5_5', 'L5-S1_1', 'L5-S1_4']
             }
-        # self.our_base_models = {
-        #         "A vs B":[
-        #         ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
-        #         ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
-        #         ],
-
-        #         "A vs C":[
-        #         ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
-        #         ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
-        #         ],
-
-        #         "A vs D":[
-        #         ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
-        #         ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
-        #         ],
-
-        #         "B vs C":[
-        #         ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
-        #         ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
-        #         ],
-
-        #         "B vs D":[
-        #         ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
-        #         ('XGBoost',XGBClassifier(n_estimators = 1500, max_depth = 5)),
-        #         ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
-        #         ],
-
-        #         "C vs D":[
-        #         ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5)),
-        #         ('XGBoost',XGBClassifier(n_estimators = 1500, max_depth = 5)),
-        #         ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
-        #         ]
+        # self.our_feature_combinations = {
+        #         "A vs B": ['L1', 'L2', 'L3', 'L4', 'L5', 'S1', 'L1-L2_3', 'L1-L2_4', 'L1-L2_6', 'L2-L3_2', 'L2-L3_6', 'L3-L4_2', 'L3-L4_4', 'L4-L5_1', 'L4-L5_3', 'L4-L5_5'],
+        #         "A vs C": ['L1', 'L2', 'L4', 'L5', 'L1-L2_1', 'L1-L2_3', 'L1-L2_6', 'L2-L3_2', 'L2-L3_3', 'L2-L3_4', 'L2-L3_5', 'L2-L3_6', 'L3-L4_1', 'L3-L4_3', 'L3-L4_4', 'L4-L5_1', 'L4-L5_2', 'L4-L5_3', 'L4-L5_5', 'L5-S1_4'],
+        #         "A vs D": ['L1', 'L2', 'L4', 'L5', 'L1-L2_3', 'L1-L2_6', 'L2-L3_3', 'L2-L3_5', 'L3-L4_5', 'L4-L5_1', 'L4-L5_3', 'L4-L5_4'],
+        #         "B vs C": ['L3', 'L4', 'L5', 'S1', 'L1-L2_1', 'L1-L2_3', 'L1-L2_4', 'L1-L2_5', 'L1-L2_6', 'L2-L3_2', 'L2-L3_3', 'L2-L3_6', 'L3-L4_2', 'L3-L4_3', 'L3-L4_5', 'L3-L4_6', 'L4-L5_1', 'L4-L5_2', 'L4-L5_3', 'L4-L5_4', 'L4-L5_5', 'L5-S1_1'],
+        #         "B vs D": ['L1', 'L5', 'S1', 'L1-L2_5', 'L1-L2_6', 'L2-L3_1', 'L2-L3_2', 'L2-L3_3', 'L2-L3_6', 'L3-L4_1', 'L3-L4_6', 'L4-L5_3'],
+        #         "C vs D": ['L1', 'L2', 'L5', 'S1', 'L1-L2_3', 'L1-L2_4', 'L2-L3_2', 'L3-L4_1', 'L3-L4_3', 'L4-L5_2', 'L4-L5_5', 'L5-S1_4']
         #     }
         self.our_base_models = {
                 "A vs B":[
-                ('XGBoost',XGBClassifier(n_estimators = 1500, max_depth = 5)),
+                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
                 ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
                 ],
 
                 "A vs C":[
+                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
                 ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
                 ],
 
                 "A vs D":[
-                ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
+                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
+                ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
                 ],
 
                 "B vs C":[
+                ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
                 ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
                 ],
 
                 "B vs D":[
                 ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
-                ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5)),
+                ('XGBoost',XGBClassifier(n_estimators = 1500, max_depth = 5)),
                 ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
                 ],
 
                 "C vs D":[
+                ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5)),
                 ('XGBoost',XGBClassifier(n_estimators = 1500, max_depth = 5)),
                 ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
                 ]
             }
+        # self.our_base_models = {
+        #         "A vs B":[
+        #         ('XGBoost',XGBClassifier(n_estimators = 1500, max_depth = 5)),
+        #         ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
+        #         ],
+
+        #         "A vs C":[
+        #         ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
+        #         ],
+
+        #         "A vs D":[
+        #         ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
+        #         ],
+
+        #         "B vs C":[
+        #         ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5))
+        #         ],
+
+        #         "B vs D":[
+        #         ('LGBM',LGBMClassifier(verbose = -1,n_estimators = 1500, max_depth = 5)),
+        #         ('RandomForest', RandomForestClassifier(n_estimators=3000, max_depth=5)),
+        #         ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
+        #         ],
+
+        #         "C vs D":[
+        #         ('XGBoost',XGBClassifier(n_estimators = 1500, max_depth = 5)),
+        #         ('CatBoost',CatBoostClassifier(verbose = False,iterations = 800, max_depth = 5))
+        #         ]
+        #     }
     def model_combinations(self):
         """
         Generate all possible combinations of base models for stacking.
@@ -187,7 +187,7 @@ class StackingModel:
         
         for Cat_A, Cat_B in categories:
             all_com = self.model_combinations()
-            FPR, TPR, Thresholds, AUCs, Scores = [], [], [], []
+            FPR, TPR, Thresholds, AUCs, Scores = [], [], [], [], []
 
             df_subset = df[df['Disease'].isin([Cat_A, Cat_B])]
             print(f"Stacking model is building for {Cat_A} vs {Cat_B}...")

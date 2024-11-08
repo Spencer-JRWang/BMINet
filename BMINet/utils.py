@@ -106,5 +106,44 @@ def train_test_data(file_path,save_path):
         
         fold += 1
 
+import pandas as pd
+from sklearn.impute import KNNImputer
+
+def Fill_NA(df: pd.DataFrame, na_threshold: float = 0.5, knn_neighbors: int = 5, save_file: str = None) -> pd.DataFrame:
+    """
+    Removes columns with a missing value ratio exceeding a specified threshold, 
+    and imputes remaining missing values using the KNN algorithm.
+
+    Parameters:
+    df : pd.DataFrame
+        Input DataFrame with features as columns, some of which may have missing values.
+    na_threshold : float, default=0.5
+        The threshold proportion of missing values above which a column is removed (between 0 and 1).
+    n_neighbors : int, default=5
+        The number of neighboring samples used by KNNImputer for filling missing values.
+
+    Returns:
+    pd.DataFrame
+        A DataFrame with columns exceeding the missing value threshold removed, 
+        and remaining missing values imputed using KNN.
+    """
+    # Identify columns with a missing value ratio above the threshold
+    na_ratio = df.isna().mean()
+    cols_to_drop = na_ratio[na_ratio > na_threshold].index
+    df = df.drop(columns=cols_to_drop)
+
+    labels = df.iloc[:, 0]
+
+    # KNN fill
+    imputer = KNNImputer(n_neighbors=knn_neighbors)
+    df_imputed_values = pd.DataFrame(imputer.fit_transform(df.iloc[:, 1:]), columns=df.columns[1:], index=df.index)
+    df_imputed = pd.concat([labels, df_imputed_values], axis=1)
+
+    if save_file:
+        # Save the imputed DataFrame to file
+        df_imputed.to_csv(save_file, index=False)
+    
+    return df_imputed
+
 if __name__ == "__main__":
     plot_multi_his()

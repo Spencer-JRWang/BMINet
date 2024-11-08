@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: BMINet
-Version: 0.1.0
+Version: 0.1.2
 Summary: Machine Learning and Graph based tool for detecting and analyzing Bone-Muscle Interactions
 Home-page: https://github.com/Spencer-JRWang/BMINet
 Author: Spencer Wang
@@ -146,6 +146,15 @@ selector = FeatureSelector(core_name="LightGBM")
 selected_features = selector.select(df)
 ```
 > core_name should be "LightGBM", "XGBoost" or "CatBoost"
+
+- Build linear formula model
+```python
+from BMINet.Model import Lasso_Formula
+formula = Lasso_Formula(df, disease_pairs=("A", "B"))
+print(formula)
+```
+> Also Ridge, ElasticNet and Simple Linear
+
 - Build stacking model
 ```python
 from BMINet.Interaction import StackingModel
@@ -223,19 +232,6 @@ metrics = metrics_calculator.compute_metrics()
 > You can see more Example usage at [here](https://github.com/Spencer-JRWang/BMINet/blob/main/Example.ipynb)
 
 # Update Log
-- 2024/8/28: Version `0.0.1`, test version
-- 2024/8/28: Version `0.0.2`, test version, update discription
-- 2024/8/28: Version `0.0.3`, test version, fix a bug
-- 2024/8/28: Version `0.0.4`, test version, fix python dependency
-- 2024/8/28: Version `0.0.5`, test version, fix a bug
-- 2024/8/31: Version `0.0.6`, test version, update trained model
-- 2024/8/31: Version `0.0.7`, test version, fix a bug
-- 2024/8/31: Version `0.0.8`, test version, fix a bug
-- 2024/8/31: Version `0.0.9`, test version, fix a bug
-- 2024/9/1: Version `0.0.10`, test version, fix a bug
-- 2024/9/1: Version `0.0.11`, test version, fix a bug
-- 2024/9/3: Version `0.0.12`, test version, fix a bug
-- 2024/9/3: Version `0.0.13`, test version, fix a numpy dependency bug and use_our_model prediction
-- 2024/9/5: Version `0.0.14`, test version, fix CatBoost bug
-- 2024/9/5: Version `0.0.14`, test version, fix CatBoost bug
-- 2024/9/5: Version `0.1.0`, test version, fix CatBoost bug
+- 2024/9/5: Version `0.1.0`, fix CatBoost bug
+- 2024/9/5: Version `0.1.1`, update prediction threholds
+- 2024/11/8: Version `0.1.2`, update linear formula model
