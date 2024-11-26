@@ -120,3 +120,4 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/9/5: Version `0.1.0`, fix CatBoost bug
 - 2024/9/5: Version `0.1.1`, update prediction threholds
 - 2024/11/8: Version `0.1.2`, update linear formula model
+- 2024/11/26: Version `0.1.3`, add matrix visulization
