@@ -2,6 +2,8 @@ import numpy as np
 import networkx as nx
 import shap
 import lightgbm as lgb
+import seaborn as sns
+import matplotlib.pyplot as plt
 from xgboost import XGBClassifier
 from catboost import CatBoostClassifier
 from itertools import combinations
@@ -30,7 +32,7 @@ class NetworkConstructor:
         """
         if core_name == "LightGBM":
             # No need to return a model, as LightGBM's training code is used directly.
-            return None  
+            return None
         elif core_name == "XGBoost":
             return XGBClassifier(n_estimators=1000, max_depth=5)
         elif core_name == "CatBoost":
@@ -38,7 +40,7 @@ class NetworkConstructor:
         else:
             raise ValueError("Unsupported core. Choose from LightGBM, XGBoost, or CatBoost.")
 
-    def construct_network(self,df,feature_combination_dict, edge_weight = False):
+    def construct_network(self,df,feature_combination_dict, edge_weight = False, show_matrix = True):
         """
         Construct networks for each pair of categories and return a list of interaction networks.
         
@@ -103,7 +105,33 @@ class NetworkConstructor:
             inds = np.argsort(-interaction_matrix.sum(0))[:len(self.feature_combination_dict[f'{Cat_A} vs {Cat_B}'])]
             sorted_ia_matrix = interaction_matrix[inds, :][:, inds]
             feature_names = X.columns[inds]
-            
+            # show matrix
+            if show_matrix:
+                plt.figure(figsize=(8, 8))
+                sns.heatmap(
+                    sorted_ia_matrix, 
+                    annot=True, 
+                    fmt=".2f", 
+                    cmap='coolwarm', 
+                    cbar_kws={'label': 'Intensity'}, 
+                    cbar=False
+                )
+
+                plt.xticks(
+                    ticks=range(len(X.columns[inds])), 
+                    labels=X.columns[inds], 
+                    rotation=45, 
+                    horizontalalignment="right"
+                )
+                plt.yticks(
+                    ticks=range(len(X.columns[inds])), 
+                    labels=X.columns[inds], 
+                    rotation=45, 
+                    horizontalalignment="right"
+                )
+                plt.title(f"{Cat_A} vs {Cat_B}")
+                plt.tight_layout()
+                plt.show()
             # Create a network graph
             G = nx.Graph()
             
@@ -152,4 +180,11 @@ class NetworkConstructor:
         nx.write_graphml(Graph_BMI, f'{path}/network.graphml')
         print(f"Network file saved to {path}/network.graphml")
         return None
+    
+    def read_graph(self, path):
+        """
+        Read .graphml file.
+        """
+        Graph_BMI = nx.read_graphml(path)
+        return Graph_BMI
 
