@@ -121,3 +121,13 @@ metrics = metrics_calculator.compute_metrics()
 - 2024/9/5: Version `0.1.1`, update prediction threholds
 - 2024/11/8: Version `0.1.2`, update linear formula model
 - 2024/11/26: Version `0.1.3`, add matrix visulization
+
+> BMINet is developed by Jingran Wang
+
+> Department of Orthopedic Surgery, The First Affiliated Hospital of Soochow University
+
+> MOE Key Laboratory of Geriatric Diseases and Immunology, Suzhou Key Laboratory of Pathogen Bioscience and Anti-Infective Medicine
+---
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <img src="Example/LOGO.png" alt="Organization Logo" style="width: 100px; height: auto; margin-left: 20px;">
+</div>
