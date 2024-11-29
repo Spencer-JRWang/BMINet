@@ -14,7 +14,7 @@ from sklearn.calibration import calibration_curve
 from scipy import stats
 
 
-def plot_single_roc(file_path, output_dir_pdf = False):
+def plot_single_roc(data,output_dir_pdf = False, count_cutoff = 30):
     """
     Plot ROC curves for each pair of diseases with all features.
 
@@ -26,11 +26,6 @@ def plot_single_roc(file_path, output_dir_pdf = False):
     None
     """
     print("...Generating feature ROC plots...")
-    
-    # Read the txt file
-    data = pd.read_csv(file_path, delimiter='\t')
-    for col in data.columns[1:]:
-        data[col] = pd.to_numeric(data[col], errors='coerce')
     
     # Get unique disease categories
     diseases = data['Disease'].unique()
@@ -52,7 +47,7 @@ def plot_single_roc(file_path, output_dir_pdf = False):
         for feature in data.columns[1:]:
             # Extract feature data and labels, dropping NaN values
             feature_data = data_current[[feature, 'Disease']].dropna()
-            if len(feature_data) < 50:
+            if len(feature_data) < count_cutoff:
                 pass
             else:
                 disease_counts = feature_data['Disease'].value_counts()
@@ -110,7 +105,7 @@ def plot_single_roc(file_path, output_dir_pdf = False):
 
 
 
-def plot_pca(file_path, output_dir = False):
+def plot_pca(data, output_dir = False):
     """
     Plot PCA for each disease group.
 
@@ -123,16 +118,13 @@ def plot_pca(file_path, output_dir = False):
     """
     print("...Generating PCA plots...")
 
-    # Read the txt file
-    data = pd.read_csv(file_path, delimiter='\t')
-
     for col in data.columns[1:]:
         data[col] = pd.to_numeric(data[col], errors='coerce')
     # Extract feature columns (assuming 'Disease' is the first column)
     features = data.columns[1:]
 
     # Remove columns with any NaN values
-    data_no_nan = data.dropna(axis=1, how='any')
+    data_no_nan = data
     features_no_nan = data_no_nan.columns[1:]  # Recalculate features without NaNs
 
     if len(features_no_nan) < 2:
@@ -595,4 +587,53 @@ def age_peak(data_path, ci=95, plot = False):
         # Save and show the plot
         plt.savefig(plot)
     return group_peak_ci
+
+
+from scipy.cluster.hierarchy import linkage, fcluster
+
+def correlation(df, method='spearman', n_clusters=2, linkage_method='average',metric='euclidean'):
+    """
+    Perform correlation analysis, hierarchical clustering, and visualize with a combined heatmap and dendrogram.
+
+    Parameters:
+    - df: pandas.DataFrame, input data where the first row serves as an index (excluded from analysis).
+    - method: str, correlation method, either 'spearman' or 'pearson'.
+    - n_clusters: int, the number of groups for clustering.
+    - linkage_method: str, the linkage method for hierarchical clustering (e.g., 'average', 'single', 'complete').
+
+    Returns:
+    - cluster_assignments: pd.Series, grouping information for each feature.
+    - clustermap: sns.matrix.ClusterGrid, the resulting clustermap object.
+    """
+    # 1. Extract the part of the DataFrame to analyze (all rows except the first, and all columns).
+    data = df.iloc[1:, :]
+    data = data.drop(data.columns[0], axis=1)
+
+    # 2. Compute the correlation matrix.
+    if method not in ['spearman', 'pearson']:
+        raise ValueError("The 'method' parameter must be either 'spearman' or 'pearson'")
+    corr = data.corr(method=method)
+
+    # 3. Perform hierarchical clustering on the correlation matrix.
+    # Use (1 - correlation) as a distance metric because higher correlation implies closer proximity.
+    linkage_matrix = linkage(1 - corr, method=linkage_method, metric=metric)
+    # 4. Visualize the heatmap with clustering.
+    clustermap = sns.clustermap(
+        corr,
+        method=linkage_method,  # Linkage method for clustering
+        metric=metric,          # Distance metric for clustering
+        cmap='coolwarm',       # Color map for the heatmap
+        annot=True,            # Show correlation values
+        fmt=".2f",             # Format for annotation
+        cbar=True,              # Show color bar
+        figsize=(12,12)
+    )
+    plt.show()
+
+    # 5. Assign clusters to features based on the dendrogram.
+    cluster_assignments = fcluster(linkage_matrix, n_clusters, criterion='maxclust')
+    cluster_series = pd.Series(cluster_assignments, index=corr.index, name='Cluster')
+    cluster_series = cluster_series.sort_values()
+
+    return cluster_series, clustermap
 
