@@ -1,5 +1,5 @@
 # Introduction of BMINet
-![framework](Example/image.png)
+![framework](https://raw.githubusercontent.com/Spencer-JRWang/BMINet/main/Example/image.png)
 Machine learning and network based tool for:
 - Classify and predict different disease stages precisely
 - Understand machenism using SHAP model explanation
@@ -129,5 +129,5 @@ metrics = metrics_calculator.compute_metrics()
 > MOE Key Laboratory of Geriatric Diseases and Immunology, Suzhou Key Laboratory of Pathogen Bioscience and Anti-Infective Medicine
 ---
 <div style="display: flex; justify-content: space-between; align-items: center;">
-    <img src="Example/LOGO.png" alt="Organization Logo" style="width: 100px; height: auto; margin-left: 20px;">
+    <img src="https://raw.githubusercontent.com/Spencer-JRWang/BMINet/main/Example/LOGO.png" alt="Organization Logo" style="width: 100px; height: auto; margin-left: 20px;">
 </div>
