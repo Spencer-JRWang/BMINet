@@ -1,3 +1,6 @@
+[![PyPI Version](https://img.shields.io/pypi/v/bminet)](https://pypi.org/project/bminet/)
+[![Total Downloads](https://pepy.tech/badge/bminet)](https://pepy.tech/project/bminet)
+
 # Introduction of BMINet
 ![framework](https://raw.githubusercontent.com/Spencer-JRWang/BMINet/main/Example/image.png)
 Machine learning and network based tool for:
@@ -131,3 +134,4 @@ metrics = metrics_calculator.compute_metrics()
 <div style="display: flex; justify-content: space-between; align-items: center;">
     <img src="https://raw.githubusercontent.com/Spencer-JRWang/BMINet/main/Example/LOGO.png" alt="Organization Logo" style="width: 100px; height: auto; margin-left: 20px;">
 </div>
+
