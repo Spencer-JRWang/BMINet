@@ -25,6 +25,16 @@ pip install .
 import pandas as pd
 df = pd.read_csv('Example/data.txt', sep='\t')
 ```
+
+- Clean and fill data
+```python
+from BMINet.utils import Fill_NA
+df = Fill_NA(df, na_threshold=0.2, knn_neighbors=5)
+```
+> If use na_threshold, the column above threhold will be droped.
+> 
+> Other NAs will be filled by KNN
+
 - Select features
 ```python
 # Load FeatureSelector
