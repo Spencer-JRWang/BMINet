@@ -128,6 +128,9 @@ metrics = metrics_calculator.compute_metrics()
 ```
 
 > You can see more Example usage at [here](https://github.com/Spencer-JRWang/BMINet/blob/main/Example.ipynb)
+> If you like BMINet, please cite:
+> 
+> Jingran Wang, Ziyan Hao, Liyun Lin, Jiachen Liu, Jiarong Wang, Zaixiang Tang, Dechun Geng, Caifang Ni, Huilin Yang, Kun Li, Jun Du. CT-based Osteoporosis Classification and Bone-Muscle Interaction Mapping Using Multiple Interpretable Machine Learning Models with the BMINet Framework. medRxiv 2025.02.12.25321163; doi:https://doi.org/10.1101/2025.02.12.25321163
 
 # Update Log
 - 2024/9/5: Version `0.1.0`, fix CatBoost bug
